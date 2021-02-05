@@ -1,5 +1,9 @@
 # testbench
 
+Final year project: DIGITAL SCHEMATIC ENTRY AND VHDL DESIGN IN JAVASCRIPT
+
+A tool to allow for schematic entry of digital circuits which exports a VHDL netlist for simulation and synthesis using the Xilinx ISE Design Suite.
+
 ## Project setup
 ```
 npm install
