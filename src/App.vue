@@ -1,29 +1,41 @@
 <template>
   <div id="app">
-    <div id="sidebar">
-      <h1>Sidebar</h1>
-      <button v-on:click="drawShape">Add Rectangle</button>
-      <button v-on:click="removeShape">Remove Last</button>
-    </div>
+    <!--<ComponentPane
+      id="component-pane"
+      v-bind:components="componentLibrary"
+      v-on:draw-shape="drawShape"
+      v-on:remove-shape="removeShape"
+      v-on:add-component="addComponent">
+    </ComponentPane>-->
+    <ComponentPane
+      id="component-pane"
+      v-bind:components="componentLibrary"
+      v-on:add-component="addComponent">
+    </ComponentPane>
     <div id="svgSpace">
       <svg ref="box" class="box" width="100%" height="100%">
-        <rect width="100%" height="100%"
-            fill="white" stroke="black" stroke-width="5"/>
       </svg>
     </div>
   </div>
 </template>
 
 <script>
+import ComponentPane from './components/ComponentPane.vue';
+import componentsStore from './assets/componentsStore';
+
 export default {
   name: 'App',
-  components: {},
+  components: {
+    ComponentPane,
+  },
   data() {
     return {
       count: 0,
       dragOffsetX: null,
       dragOffsetY: null,
       draggedObject: null,
+      componentLibrary: componentsStore,
+      oParser: new DOMParser(),
     };
   },
   computed: {
@@ -31,6 +43,40 @@ export default {
   mounted() {
   },
   methods: {
+    addComponent(component) {
+      const newComponent =
+        this.oParser.parseFromString(component.svg, 'image/svg+xml').
+            documentElement.firstChild;
+      newComponent.setAttributeNS(null, 'id', `svgelement-${this.count}`);
+      newComponent.setAttributeNS(null, 'transform', 'translate(100,100)');
+      newComponent.setAttributeNS(null, 'cursor', 'move');
+      newComponent.addEventListener('mousedown', this.drag);
+      newComponent.addEventListener('mouseup', this.drop);
+      this.$refs.box.appendChild(newComponent);
+      this.count += 1;
+    },
+    drag(event) {
+      this.draggedObject =
+          document.getElementById(event.target.parentNode.getAttribute('id'));
+      this.dragOffsetX = event.offsetX -
+          parseInt(this.draggedObject.getAttribute('transform').
+              match(/(?<=\()(.*?)(?=\,)/g));
+      this.dragOffsetY = event.offsetY -
+          parseInt(this.draggedObject.getAttribute('transform').
+              match(/(?<=\,)(.*?)(?=\))/g));
+      this.$refs.box.addEventListener('mousemove', this.move);
+    },
+    move({offsetX, offsetY}) {
+      const newX = offsetX - this.dragOffsetX;
+      const newY = offsetY - this.dragOffsetY;
+      this.draggedObject.setAttributeNS(
+          null, 'transform', `translate(${newX}, ${newY})`);
+    },
+    drop() {
+      this.draggedObject = this.dragOffsetX = this.dragOffsetY = null;
+      this.$refs.box.removeEventListener('mousemove', this.move);
+    },
+    /*
     createSvg(svgType, attributes) {
       const svgElement = document.createElementNS('http://www.w3.org/2000/svg', svgType);
       for (const attribute in attributes) {
@@ -50,8 +96,8 @@ export default {
         id: `svgelement-${this.count}`,
         x: `${randomX}`,
         y: `${randomY}`,
-        width: 20,
-        height: 20,
+        width: 150,
+        height: 150,
         fill: `#${randomColor}`,
         cursor: 'move',
       });
@@ -75,6 +121,7 @@ export default {
       this.dragOffsetY = event.offsetY -
           document.getElementById(this.draggedObject).getAttribute('y');
       this.$refs.box.addEventListener('mousemove', this.move);
+      console.log(this.draggedObject);
       // console.log(`dragging id=${this.draggedObject}
       //    with offset (${this.dragOffsetX}, ${this.dragOffsetY})`);
     },
@@ -93,6 +140,7 @@ export default {
       // console.log(`moving id=${this.draggedObject}
       //    to (${offsetX}, ${offsetY})`);
     },
+    */
   },
 };
 </script>
@@ -113,9 +161,9 @@ html, body {
   flex-direction: row;
   background-color:#2E4272;
   height: 100%;
+  overflow: hidden;
 }
-
-#sidebar {
+#component-pane {
   flex-grow: 0;
   flex-basis: 10%;
 }
@@ -123,5 +171,12 @@ html, body {
 #svgSpace {
   flex-grow: 1;
   background-color:#ffffff;
+}
+
+svg text {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 </style>
