@@ -1,19 +1,13 @@
 <template>
   <div id="app">
-    <!--<ComponentPane
-      id="component-pane"
-      v-bind:components="componentLibrary"
-      v-on:draw-shape="drawShape"
-      v-on:remove-shape="removeShape"
-      v-on:add-component="addComponent">
-    </ComponentPane>-->
     <ComponentPane
-      id="component-pane"
       v-bind:components="componentLibrary"
+      v-bind:o-parser="oParser"
       v-on:add-component="addComponent">
     </ComponentPane>
     <div id="svgSpace">
-      <svg ref="box" class="box" width="100%" height="100%">
+      <svg ref="box" class="box" width="100%" height="100%"
+        @dblclick="deselectComponents">
       </svg>
     </div>
   </div>
@@ -34,6 +28,7 @@ export default {
       dragOffsetX: null,
       dragOffsetY: null,
       draggedObject: null,
+      selectedObjects: [],
       componentLibrary: componentsStore,
       oParser: new DOMParser(),
     };
@@ -45,12 +40,13 @@ export default {
   methods: {
     addComponent(component) {
       const newComponent =
-        this.oParser.parseFromString(component.svg, 'image/svg+xml').
+        this.oParser.parseFromString('<svg width=\"150\" height=\"150\" xmlns=\"http://www.w3.org/2000/svg\">' + component.svg + '</svg>', 'image/svg+xml').
             documentElement.firstChild;
       newComponent.setAttributeNS(null, 'id', `svgelement-${this.count}`);
-      newComponent.setAttributeNS(null, 'transform', 'translate(100,100)');
+      newComponent.setAttributeNS(null, 'transform', 'translate(0,0)');
       newComponent.setAttributeNS(null, 'cursor', 'move');
       newComponent.addEventListener('mousedown', this.drag);
+      newComponent.addEventListener('mousedown', this.selectSingleComponent);
       newComponent.addEventListener('mouseup', this.drop);
       this.$refs.box.appendChild(newComponent);
       this.count += 1;
@@ -76,71 +72,17 @@ export default {
       this.draggedObject = this.dragOffsetX = this.dragOffsetY = null;
       this.$refs.box.removeEventListener('mousemove', this.move);
     },
-    /*
-    createSvg(svgType, attributes) {
-      const svgElement = document.createElementNS('http://www.w3.org/2000/svg', svgType);
-      for (const attribute in attributes) {
-        if (Object.prototype.hasOwnProperty.call(attributes, attribute)) {
-          svgElement.setAttributeNS(null, attribute, attributes[attribute]);
-        }
-      }
-      return svgElement;
+    selectSingleComponent(event) {
+      this.deselectComponents();
+      event.target.parentNode.setAttributeNS(null, 'stroke', '#00F');
+      this.selectedObjects.push(event.target.parentNode.getAttribute('id'));
     },
-    drawShape() {
-      // console.log("Adding");
-      this.count += 1;
-      const randomColor = Math.floor(Math.random()*16777215).toString(16);
-      const randomX = Math.floor(Math.random() * 100);
-      const randomY = Math.floor(Math.random() * 100);
-      const newShape = this.createSvg('rect', {
-        id: `svgelement-${this.count}`,
-        x: `${randomX}`,
-        y: `${randomY}`,
-        width: 150,
-        height: 150,
-        fill: `#${randomColor}`,
-        cursor: 'move',
-      });
-      newShape.addEventListener('mousedown', this.drag);
-      newShape.addEventListener('mouseup', this.drop);
-      this.$refs.box.appendChild(newShape);
+    deselectComponents() {
+      this.selectedObjects.forEach((object) =>
+        document.getElementById(object).setAttributeNS(null, 'stroke', '#000'),
+      );
+      this.selectedObjects = [];
     },
-    removeShape() {
-      if (this.count > 0) {
-        // console.log("removing");
-        document.getElementById(`svgelement-${this.count}`).remove();
-        this.count -= 1;
-      } else {
-        // console.log("cannot remove with 0 elements");
-      }
-    },
-    drag(event) {
-      this.draggedObject = event.target.getAttribute('id');
-      this.dragOffsetX = event.offsetX -
-          document.getElementById(this.draggedObject).getAttribute('x');
-      this.dragOffsetY = event.offsetY -
-          document.getElementById(this.draggedObject).getAttribute('y');
-      this.$refs.box.addEventListener('mousemove', this.move);
-      console.log(this.draggedObject);
-      // console.log(`dragging id=${this.draggedObject}
-      //    with offset (${this.dragOffsetX}, ${this.dragOffsetY})`);
-    },
-    drop() {
-      // console.log(`dropping id=${this.draggedObject}`);
-      this.draggedObject = this.dragOffsetX = this.dragOffsetY = null;
-      this.$refs.box.removeEventListener('mousemove', this.move);
-    },
-    move({offsetX, offsetY}) {
-      const newX = offsetX - this.dragOffsetX;
-      const newY = offsetY - this.dragOffsetY;
-      document.getElementById(
-          this.draggedObject).setAttributeNS(null, 'x', `${newX}`);
-      document.getElementById(
-          this.draggedObject).setAttributeNS(null, 'y', `${newY}`);
-      // console.log(`moving id=${this.draggedObject}
-      //    to (${offsetX}, ${offsetY})`);
-    },
-    */
   },
 };
 </script>
@@ -165,7 +107,8 @@ html, body {
 }
 #component-pane {
   flex-grow: 0;
-  flex-basis: 10%;
+  flex-basis: 150px;
+  overflow: auto;
 }
 
 #svgSpace {
