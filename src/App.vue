@@ -1,36 +1,48 @@
 <template>
   <div id="app">
     <ComponentPane
-      v-bind:components="componentLibrary"
-      v-bind:o-parser="oParser"
-      v-on:add-component="addComponent">
+      :components="componentLibrary">
     </ComponentPane>
-    <div id="svgSpace">
-      <svg ref="box" class="box" width="100%" height="100%"
-        @dblclick="deselectComponents">
-      </svg>
+    <div id="viewer">
+      <ul id="tab-selector">
+        <li v-for="design in designs"
+          :key="design.id"
+          :class='{"selected": (selectedDesign == design.id)}'
+          @click="selectedDesign = design.id">
+          {{ design.name }}
+        </li>
+        <li @click="addNewDesign">
+          +
+        </li>
+      </ul>
+      <Schematic v-for="design in designs"
+        :key="design.id"
+        :design="design"
+        v-show="selectedDesign == design.id"
+        class='schematic-view'>
+      </Schematic>
     </div>
   </div>
 </template>
 
 <script>
 import ComponentPane from './components/ComponentPane.vue';
+import Schematic from './components/Schematic.vue';
 import componentsStore from './assets/componentsStore';
 
 export default {
   name: 'App',
   components: {
     ComponentPane,
+    Schematic,
   },
   data() {
     return {
-      count: 0,
-      dragOffsetX: null,
-      dragOffsetY: null,
-      draggedObject: null,
-      selectedObjects: [],
       componentLibrary: componentsStore,
-      oParser: new DOMParser(),
+      selectedDesign: 0,
+      designs: [
+        {'id': 0, 'name': 'New Schematic', 'components': []},
+      ],
     };
   },
   computed: {
@@ -38,50 +50,10 @@ export default {
   mounted() {
   },
   methods: {
-    addComponent(component) {
-      const newComponent =
-        this.oParser.parseFromString('<svg width=\"150\" height=\"150\" xmlns=\"http://www.w3.org/2000/svg\">' + component.svg + '</svg>', 'image/svg+xml').
-            documentElement.firstChild;
-      newComponent.setAttributeNS(null, 'id', `svgelement-${this.count}`);
-      newComponent.setAttributeNS(null, 'transform', 'translate(0,0)');
-      newComponent.setAttributeNS(null, 'cursor', 'move');
-      newComponent.addEventListener('mousedown', this.drag);
-      newComponent.addEventListener('mousedown', this.selectSingleComponent);
-      newComponent.addEventListener('mouseup', this.drop);
-      this.$refs.box.appendChild(newComponent);
-      this.count += 1;
-    },
-    drag(event) {
-      this.draggedObject =
-          document.getElementById(event.target.parentNode.getAttribute('id'));
-      this.dragOffsetX = event.offsetX -
-          parseInt(this.draggedObject.getAttribute('transform').
-              match(/(?<=\()(.*?)(?=\,)/g));
-      this.dragOffsetY = event.offsetY -
-          parseInt(this.draggedObject.getAttribute('transform').
-              match(/(?<=\,)(.*?)(?=\))/g));
-      this.$refs.box.addEventListener('mousemove', this.move);
-    },
-    move({offsetX, offsetY}) {
-      const newX = offsetX - this.dragOffsetX;
-      const newY = offsetY - this.dragOffsetY;
-      this.draggedObject.setAttributeNS(
-          null, 'transform', `translate(${newX}, ${newY})`);
-    },
-    drop() {
-      this.draggedObject = this.dragOffsetX = this.dragOffsetY = null;
-      this.$refs.box.removeEventListener('mousemove', this.move);
-    },
-    selectSingleComponent(event) {
-      this.deselectComponents();
-      event.target.parentNode.setAttributeNS(null, 'stroke', '#00F');
-      this.selectedObjects.push(event.target.parentNode.getAttribute('id'));
-    },
-    deselectComponents() {
-      this.selectedObjects.forEach((object) =>
-        document.getElementById(object).setAttributeNS(null, 'stroke', '#000'),
-      );
-      this.selectedObjects = [];
+    addNewDesign() {
+      const newID = this.designs.length;
+      this.designs.push(
+          {'id': newID, 'name': 'New Schematic', 'components': []});
     },
   },
 };
@@ -98,25 +70,60 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #ffffff;
   display: flex;
   flex-direction: row;
   background-color:#2E4272;
-  height: 100%;
-  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  overflow: auto;
 }
 #component-pane {
+  color: #ffffff;
   flex-grow: 0;
+  flex-shrink: 0;
   flex-basis: 150px;
   overflow: auto;
 }
 
-#svgSpace {
+#viewer {
   flex-grow: 1;
+  display: flex;
+  /* Setting this prevents  this expanding wider than the screen*/
+  min-width: 0;
+  flex-direction: column;
   background-color:#ffffff;
 }
 
-svg text {
+.schematic-view {
+  background-color:#c0c0c0;
+  flex-grow: 1;
+}
+
+#tab-selector {
+  display: block;
+  list-style: none;
+  margin: 0 0 0 0;
+  color: #ffffff;
+  background-color:#2E4272;
+  overflow-y: auto;
+  white-space:nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+#tab-selector > li {
+  padding: 15px 30px;
+  display: inline-block;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#tab-selector > li.selected {
+  background-color:#001955
+}
+
+.unselectable-text {
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
