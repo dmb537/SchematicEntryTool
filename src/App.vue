@@ -22,7 +22,9 @@
         v-show="activeDesign == design"
         class='schematic-view'
         @select-components="selectComponents"
-        @deselect-components="deselectComponents">
+        @deselect-components="deselectComponents"
+        @modify-drag="modifyDrag"
+        @apply-drag="applyDrag">
       </Schematic>
     </div>
   </div>
@@ -78,6 +80,20 @@ export default {
         toDeselect.properties.strokeColour = '#000';
       });
     },
+    modifyDrag(components, dragX, dragY) {
+      components.forEach((toDrag) => {
+        toDrag.properties.dragX = dragX;
+        toDrag.properties.dragY = dragY;
+      });
+    },
+    applyDrag(components, dragX, dragY) {
+      components.forEach((toDrag) => {
+        toDrag.properties.x = toDrag.properties.x + dragX;
+        toDrag.properties.y = toDrag.properties.y + dragY;
+        toDrag.properties.dragX = 0;
+        toDrag.properties.dragY = 0;
+      });
+    },
   },
 };
 </script>
@@ -114,11 +130,11 @@ html, body {
   /* Setting this prevents  this expanding wider than the screen*/
   min-width: 0;
   flex-direction: column;
-  background-color:#ffffff;
+  background-color:#c0c0c0;
 }
 
 .schematic-view {
-  background-color:#c0c0c0;
+  background-color:#ffffff;
   flex-grow: 1;
 }
 
