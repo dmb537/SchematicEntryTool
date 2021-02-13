@@ -9,6 +9,7 @@
     <StoreComponent v-for="component in components"
       :key="component.componentID"
       :component="component"
+      @add-component="$emit('add-component', component)"
       >
     </StoreComponent>
   </div>

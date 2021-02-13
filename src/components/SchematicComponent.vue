@@ -1,6 +1,7 @@
 <template>
-  <div v-html="svg">
-  </div>
+  <g v-html="svg"
+    @click="$emit('component-clicked', component)">
+  </g>
 </template>
 
 <script>
@@ -12,11 +13,11 @@ export default {
   computed: {
     svg: function() {
       let computedSVG = this.component.customSVG;
-      for (const property in this.component.displayProperties) {
-        if (this.component.displayProperties.hasOwnProperty(property)) {
+      for (const property in this.component.properties) {
+        if (this.component.properties.hasOwnProperty(property)) {
           computedSVG = computedSVG.replace(
               new RegExp('\\$\\{' + property + '\\}', 'g'),
-              this.component.displayProperties[property]);
+              this.component.properties[property]);
         }
       }
       return computedSVG;

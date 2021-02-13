@@ -3,7 +3,8 @@
     <svg width="80%" viewBox="-25 -25 200 200"
         class="component-preview unselectable-text"
         v-html="svg"
-        :key="component.name">
+        :key="component.name"
+        @click="$emit('add-component', component)">
     </svg>
   </div>
 </template>
@@ -17,11 +18,11 @@ export default {
   computed: {
     svg: function() {
       let computedSVG = this.component.customSVG;
-      for (const property in this.component.displayProperties) {
-        if (this.component.displayProperties.hasOwnProperty(property)) {
+      for (const property in this.component.properties) {
+        if (this.component.properties.hasOwnProperty(property)) {
           computedSVG = computedSVG.replace(
               new RegExp('\\$\\{' + property + '\\}', 'g'),
-              this.component.displayProperties[property]);
+              this.component.properties[property]);
         }
       }
       return computedSVG;

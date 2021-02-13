@@ -1,14 +1,15 @@
 <template>
   <div id="app">
     <ComponentPane
-      :components="componentLibrary">
+      :components="componentLibrary"
+      @add-component="addComponent">
     </ComponentPane>
     <div id="viewer">
-      <ul id="tab-selector">
+      <ul id="tab-selector" class='unselectable-text'>
         <li v-for="design in designs"
           :key="design.id"
-          :class='{"selected": (selectedDesign == design.id)}'
-          @click="selectedDesign = design.id">
+          :class='{"selected": (activeDesign == design)}'
+          @click="activeDesign = design">
           {{ design.name }}
         </li>
         <li @click="addNewDesign">
@@ -18,8 +19,10 @@
       <Schematic v-for="design in designs"
         :key="design.id"
         :design="design"
-        v-show="selectedDesign == design.id"
-        class='schematic-view'>
+        v-show="activeDesign == design"
+        class='schematic-view'
+        @select-components="selectComponents"
+        @deselect-components="deselectComponents">
       </Schematic>
     </div>
   </div>
@@ -39,7 +42,7 @@ export default {
   data() {
     return {
       componentLibrary: componentsStore,
-      selectedDesign: 0,
+      activeDesign: null,
       designs: [
         {'id': 0, 'name': 'New Schematic', 'components': []},
       ],
@@ -48,12 +51,32 @@ export default {
   computed: {
   },
   mounted() {
+    this.activeDesign = this.designs[0];
   },
   methods: {
     addNewDesign() {
-      const newID = this.designs.length;
-      this.designs.push(
-          {'id': newID, 'name': 'New Schematic', 'components': []});
+      const newDesign =
+          {'id': this.designs.length,
+            'name': 'New Schematic',
+            'components': []};
+      this.designs.push(newDesign);
+      this.activeDesign = newDesign;
+    },
+    addComponent(component) {
+      const newComponent = JSON.parse(JSON.stringify(component));
+      newComponent.properties.componentID =
+          `component-${this.activeDesign.components.length}`;
+      this.activeDesign.components.push(newComponent);
+    },
+    selectComponents(components) {
+      components.forEach((toSelect) => {
+        toSelect.properties.strokeColour = '#00F';
+      });
+    },
+    deselectComponents(components) {
+      components.forEach((toDeselect) => {
+        toDeselect.properties.strokeColour = '#000';
+      });
     },
   },
 };
