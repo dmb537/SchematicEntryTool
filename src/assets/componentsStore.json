@@ -1,8 +1,44 @@
 [
   {
-    "componentName": "AND",
     "properties": {
+      "componentName": "AND",
       "componentID": "preview-and",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "strokeColour": "#000",
+      "rotation": 0
+    },
+    "inputPins": [
+      {
+        "pinName": "A",
+        "basePosition": [0, 50],
+        "currentPosition": [0, 50],
+        "connectedNet": "open"
+      },
+      {
+        "name": "B",
+        "basePosition": [0, 100],
+        "currentPosition": [0, 100],
+        "connectedNet": "open"
+      }
+    ],
+    "outputPins": [
+      {
+        "pinName": "O",
+        "basePosition": [150, 75],
+        "currentPosition": [150, 75],
+        "connectedNet": "open"
+      }
+    ],
+    "customBodyPath": "M 10 50 h 20 M 10 100 h 20 M 140 75 h -20 M 30 130 v -110 h 40 c 67 0 67 110 0 110 z",
+    "customSVG": "<g id=\"${componentID}\" transform=\"translate(${x},${y}) translate(${dragX},${dragY})\" stroke=\"${strokeColour}\"><title>ID: ${componentID} Type: ${componentName}</title><rect id=\"${componentID}:A\" height=\"20\" width=\"20\" y=\"40\" x=\"-10\" fill=\"#fff\"><title>${componentID}:A</title></rect><rect id=\"${componentID}:B\" height=\"20\" width=\"20\" y=\"90\" x=\"-10\" fill=\"#fff\"/><rect id=\"${componentID}:O\" height=\"20\" width=\"20\" y=\"65\" x=\"140\" fill=\"#fff\"/><path d=\"M 10 50 h 20 M 10 100 h 20 M 140 75 h -20 M 30 130 v -110 h 40 c 67 0 67 110 0 110 z\" fill=\"#fff\"/></g>"
+  },
+  {
+    "properties": {
+      "componentName": "OR",
+      "componentID": "preview-or",
       "x": 0,
       "y": 0,
       "dragX": 0,
@@ -21,14 +57,77 @@
         "connectedNet": "open"
       }
     ],
-    "outputs": [
+    "outputPins": [
       {
         "pinName": "O",
         "pinPosition": [150, 75],
         "connectedNet": "open"
       }
     ],
-    "generateSVG": false,
-    "customSVG": "<g id=\"${componentID}\" transform=\"translate(${x},${y}) translate(${dragX},${dragY})\"  stroke=\"${strokeColour}\"><title>${componentID}</title><rect height=\"150\" width=\"150\" stroke-width=\"1.5\" fill=\"#fff\"/><text xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"24\" y=\"83.48644\" x=\"75\" fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"0\" fill=\"#000000\">AND</text><rect height=\"20\" width=\"20\" y=\"40\" x=\"-10\" fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"1.5\" fill=\"#fff\"/><rect height=\"20\" width=\"20\" y=\"90\" x=\"-10\" fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"1.5\" fill=\"#fff\"/><rect height=\"20\" width=\"20\" y=\"65\" x=\"140\" fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"1.5\" fill=\"#fff\"/></g>"
+    "customBodyPath": "M 10 50 h 22 M 10 100 h 22 M 140 75 h -20 M 20 130 c 20 -30 20 -80 0 -110 h 20 c 50 0 80 50 80 55 c 0 5 -30 55 -80 55 z",
+    "customSVG": "<g id=\"${componentID}\" transform=\"translate(${x},${y}) translate(${dragX},${dragY})\" stroke=\"${strokeColour}\"><title>${componentID}:${componentName}</title><rect id=\"${componentID}:A\" height=\"20\" width=\"20\" y=\"40\" x=\"-10\" fill=\"#fff\"/><rect id=\"${componentID}:B\" height=\"20\" width=\"20\" y=\"90\" x=\"-10\" fill=\"#fff\"/><rect id=\"${componentID}:O\" height=\"20\" width=\"20\" y=\"65\" x=\"140\" fill=\"#fff\"/><path d=\"M 10 50 h 22 M 10 100 h 22 M 140 75 h -20 M 20 130 c 20 -30 20 -80 0 -110 h 20 c 50 0 80 50 80 55 c 0 5 -30 55 -80 55 z\" fill=\"#fff\"/></g>"
+  },
+  {
+    "properties": {
+      "componentName": "XOR",
+      "componentID": "preview-xor",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "strokeColour": "#000"
+    },
+    "inputPins": [
+      {
+        "pinName": "A",
+        "pinPosition": [0, 50],
+        "connectedNet": "open"
+      },
+      {
+        "name": "B",
+        "pinPosition": [0, 100],
+        "connectedNet": "open"
+      }
+    ],
+    "outputPins": [
+      {
+        "pinName": "O",
+        "pinPosition": [150, 75],
+        "connectedNet": "open"
+      }
+    ],
+    "customBodyPath": "M 10 50 h 12 M 10 100 h 12 M 140 75 h -20 M 10 130 c 20 -30 20 -80 0 -110 M 20 130 c 20 -30 20 -80 0 -110 h 20 c 50 0 80 50 80 55 c 0 5 -30 55 -80 55 z",
+    "customSVG": "<g id=\"${componentID}\" transform=\"translate(${x},${y}) translate(${dragX},${dragY})\" stroke=\"${strokeColour}\"><title>${componentID}:${componentName}</title><rect id=\"clickboxcorrection\" height=\"110\" width=\"25\" y=\"20\" x=\"10\" fill=\"#fff\" stroke=\"#fff\"/><rect id=\"${componentID}:A\" height=\"20\" width=\"20\" y=\"40\" x=\"-10\" fill=\"#fff\"/><rect id=\"${componentID}:B\" height=\"20\" width=\"20\" y=\"90\" x=\"-10\" fill=\"#fff\"/><rect id=\"${componentID}:O\" height=\"20\" width=\"20\" y=\"65\" x=\"140\" fill=\"#fff\"/><path d=\"M 10 50 h 12 M 10 100 h 12 M 140 75 h -20 M 10 130 c 20 -30 20 -80 0 -110 M 20 130 c 20 -30 20 -80 0 -110 h 20 c 50 0 80 50 80 55 c 0 5 -30 55 -80 55 z\" fill=\"#fff\"/></g>"
+  },
+  {
+    "properties": {
+      "componentName": "Test",
+      "componentID": "preview-test",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "strokeColour": "#000"
+    },
+    "inputPins": [
+      {
+        "pinName": "A",
+        "pinPosition": [0, 50],
+        "connectedNet": "open"
+      },
+      {
+        "name": "B",
+        "pinPosition": [0, 100],
+        "connectedNet": "open"
+      }
+    ],
+    "outputPins": [
+      {
+        "pinName": "O",
+        "pinPosition": [150, 75],
+        "connectedNet": "open"
+      }
+    ],
+    "customBodyPath": ""
   }
 ]

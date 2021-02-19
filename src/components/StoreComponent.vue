@@ -2,31 +2,26 @@
   <div>
     <svg width="80%" viewBox="-25 -25 200 200"
         class="component-preview unselectable-text"
-        v-html="svg"
         :key="component.name"
         @click="$emit('add-component', component)">
+        <SchematicComponent
+          :component="component" />
     </svg>
   </div>
 </template>
 
 <script>
+import SchematicComponent from './SchematicComponent';
+
 export default {
   name: 'StoreComponent',
+  components: {
+    SchematicComponent,
+  },
   props: {
     component: Object,
   },
   computed: {
-    svg: function() {
-      let computedSVG = this.component.customSVG;
-      for (const property in this.component.properties) {
-        if (this.component.properties.hasOwnProperty(property)) {
-          computedSVG = computedSVG.replace(
-              new RegExp('\\$\\{' + property + '\\}', 'g'),
-              this.component.properties[property]);
-        }
-      }
-      return computedSVG;
-    },
   },
   methods: {
   },
