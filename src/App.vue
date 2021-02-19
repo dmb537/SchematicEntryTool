@@ -45,22 +45,21 @@ export default {
     return {
       componentLibrary: componentsStore,
       activeDesign: null,
-      designs: [
-        {'id': 0, 'name': 'New Schematic', 'components': []},
-      ],
+      designs: [],
     };
   },
   computed: {
   },
   mounted() {
-    this.activeDesign = this.designs[0];
+    this.addNewDesign();
   },
   methods: {
     addNewDesign() {
       const newDesign =
           {'id': this.designs.length,
             'name': 'New Schematic',
-            'components': []};
+            'components': [],
+            'nets': []};
       this.designs.push(newDesign);
       this.activeDesign = newDesign;
     },
