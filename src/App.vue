@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <ComponentPane
-      :components="componentLibrary"
-      @add-component="addComponent">
+      :components="componentLibrary">
     </ComponentPane>
     <div id="viewer">
       <ul id="tab-selector" class='unselectable-text'>
         <li v-for="design in designs"
-          :key="design.id"
+          :key="design.index"
+          :index="design.index"
           :class='{"selected": (activeDesign == design)}'
-          @click="activeDesign = design">
+          @click="$store.commit('setActiveDesign', design)">
           {{ design.name }}
         </li>
         <li @click="addNewDesign">
@@ -17,14 +17,10 @@
         </li>
       </ul>
       <Schematic v-for="design in designs"
-        :key="design.id"
-        :design="design"
+        :key="design.index"
+        :index="design.index"
         v-show="activeDesign == design"
-        class='schematic-view'
-        @select-components="selectComponents"
-        @deselect-components="deselectComponents"
-        @modify-drag="modifyDrag"
-        @apply-drag="applyDrag">
+        class='schematic-view'>
       </Schematic>
     </div>
   </div>
@@ -44,11 +40,15 @@ export default {
   data() {
     return {
       componentLibrary: componentsStore,
-      activeDesign: null,
-      designs: [],
     };
   },
   computed: {
+    designs() {
+      return this.$store.state.designs;
+    },
+    activeDesign() {
+      return this.$store.state.activeDesign;
+    },
   },
   mounted() {
     this.addNewDesign();
@@ -56,18 +56,16 @@ export default {
   methods: {
     addNewDesign() {
       const newDesign =
-          {'id': this.designs.length,
+          {'index': this.designs.length,
             'name': 'New Schematic',
             'components': [],
-            'nets': []};
-      this.designs.push(newDesign);
-      this.activeDesign = newDesign;
-    },
-    addComponent(component) {
-      const newComponent = JSON.parse(JSON.stringify(component));
-      newComponent.properties.componentID =
-          `component-${this.activeDesign.components.length}`;
-      this.activeDesign.components.push(newComponent);
+            'nets': [],
+            'selectedComponents': [],
+            'isDragging': false,
+            'isSignificantDrag': false,
+            'draggedFrom': {'x': 0, 'y': 0}};
+      this.$store.commit('addDesign', newDesign);
+      this.$store.commit('setActiveDesign', newDesign);
     },
     selectComponents(components) {
       components.forEach((toSelect) => {

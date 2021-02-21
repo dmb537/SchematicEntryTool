@@ -11,25 +11,26 @@
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
     },
-    "inputPins": [
+    "pins": [
       {
         "name": "A",
         "x": 0,
         "y": 50,
+        "direction": "in",
         "connectedNet": "open"
       },
       {
         "name": "B",
         "x": 0,
         "y": 100,
+        "direction": "in",
         "connectedNet": "open"
-      }
-    ],
-    "outputPins": [
+      },
       {
         "name": "O",
         "x": 150,
         "y": 75,
+        "direction": "out",
         "connectedNet": "open"
       }
     ],
@@ -47,25 +48,26 @@
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
     },
-    "inputPins": [
+    "pins": [
       {
         "name": "A",
         "x": 0,
         "y": 50,
+        "direction": "in",
         "connectedNet": "open"
       },
       {
         "name": "B",
         "x": 0,
         "y": 100,
+        "direction": "in",
         "connectedNet": "open"
-      }
-    ],
-    "outputPins": [
+      },
       {
         "name": "O",
         "x": 150,
         "y": 75,
+        "direction": "out",
         "connectedNet": "open"
       }
     ],
@@ -83,25 +85,26 @@
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
     },
-    "inputPins": [
+    "pins": [
       {
         "name": "A",
         "x": 0,
         "y": 50,
+        "direction": "in",
         "connectedNet": "open"
       },
       {
         "name": "B",
         "x": 0,
         "y": 100,
+        "direction": "in",
         "connectedNet": "open"
-      }
-    ],
-    "outputPins": [
+      },
       {
         "name": "O",
         "x": 150,
         "y": 75,
+        "direction": "out",
         "connectedNet": "open"
       }
     ],
@@ -119,25 +122,26 @@
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
     },
-    "inputPins": [
+    "pins": [
       {
         "name": "A",
         "x": 0,
         "y": 50,
+        "direction": "in",
         "connectedNet": "open"
       },
       {
         "name": "B",
         "x": 0,
         "y": 100,
+        "direction": "in",
         "connectedNet": "open"
-      }
-    ],
-    "outputPins": [
+      },
       {
         "name": "O",
         "x": 150,
         "y": 75,
+        "direction": "out",
         "connectedNet": "open"
       }
     ],
