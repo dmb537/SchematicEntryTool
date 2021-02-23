@@ -19,6 +19,7 @@ export default new Vuex.Store({
     },
     addComponent(state, newComponent) {
       state.activeDesign.components.push(newComponent);
+      state.activeDesign.nextID += 1;
     },
     deselectAll(state) {
       state.activeDesign.selectedComponents.forEach((toDeselect) => {
@@ -34,6 +35,13 @@ export default new Vuex.Store({
     select(state, toSelect) {
       toSelect.properties.strokeColour = '#00F';
       state.activeDesign.selectedComponents.push(toSelect);
+    },
+    deleteSelection(state) {
+      state.activeDesign.selectedComponents.forEach((toDelete) => {
+        Vue.delete(state.activeDesign.components,
+            state.activeDesign.components.indexOf(toDelete));
+      });
+      state.activeDesign.selectedComponents = [];
     },
     setSignificantDrag(state, isSignificantDrag) {
       state.activeDesign.isSignificantDrag = isSignificantDrag;
@@ -72,7 +80,7 @@ export default new Vuex.Store({
     addNewComponent(context, component) {
       const newComponent = JSON.parse(JSON.stringify(component));
       newComponent.properties.componentID =
-          `component-${context.state.activeDesign.components.length}`;
+          `component-${context.state.activeDesign.nextID}`;
       context.commit('addComponent', newComponent);
     },
     startDrag(context, mouseEvent) {

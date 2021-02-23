@@ -59,6 +59,7 @@ export default {
           {'index': this.designs.length,
             'name': 'New Schematic',
             'components': [],
+            'nextID': 0,
             'nets': [],
             'selectedComponents': [],
             'isDragging': false,

@@ -3,10 +3,10 @@
     :id="component.properties.componentID"
     :transform="transform"
     :stroke="component.properties.strokeColour"
-    @mousedown.exact="mousedown"
-    @mousedown.ctrl.exact="mousedownctl"
-    @mousemove="mousemove"
-    @mouseup="mouseup">
+    @mousedown.exact="mousedownbody"
+    @mousedown.ctrl.exact="mousedownctlbody"
+    @mousemove="mousemovebody"
+    @mouseup="mouseupbody" >
     <title>
       Name: {{ component.properties.componentID }}
       Type: {{ component.properties.componentName }}
@@ -45,7 +45,7 @@ export default {
     },
   },
   methods: {
-    mousedown(event) {
+    mousedownbody(event) {
       // Mouse down without ctrl:
       //  If on a currently unselected component, select only that component
       //    then drag
@@ -56,7 +56,7 @@ export default {
       }
       this.$store.dispatch('startDrag', event);
     },
-    mousedownctl(event) {
+    mousedownctlbody(event) {
       // Mouse down with ctrl:
       //  If on an unselected component, add to selection and begin drag
       //  If on a selected component, deselect it and don't allow drag
@@ -67,13 +67,13 @@ export default {
         this.$store.dispatch('startDrag', event);
       }
     },
-    mouseup(event) {
+    mouseupbody(event) {
       if (this.design.isSignificantDrag) {
         this.$store.commit('applyDrag', event);
       }
       this.$store.commit('endDrag');
     },
-    mousemove(event) {
+    mousemovebody(event) {
       if (this.design.isDragging) {
         if (!this.design.isSignificantDrag) {
           if (Math.abs(event.offsetX - this.design.draggedFrom.x) > 10 ||

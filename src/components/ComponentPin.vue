@@ -1,7 +1,7 @@
 <template>
-  <g v-html="pinSVG" class="component-pin"/>
+  <g v-html="pinSVG" class="component-pin"
+    @mousedown.stop="startWire"/>
 </template>
-
 
 <script>
 export default {
@@ -33,6 +33,11 @@ export default {
       }
 
       return pinSVG;
+    },
+  },
+  methods: {
+    startWire() {
+      console.log('Started wire');
     },
   },
 };

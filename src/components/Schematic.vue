@@ -1,8 +1,10 @@
 <template>
   <div>
       <svg ref="box" class="box unselectable-text" width="100%" height="100%"
+        tabindex="0"
         @mousemove="backgroundMouseMove"
-        @dblclick="$store.commit('deselectAll')">
+        @dblclick="$store.commit('deselectAll')"
+        @keyup.delete="deleteSelection" >
         <SchematicComponent v-for="component in design.components"
             :key="component.properties.componentID"
             :design="design"
@@ -38,10 +40,16 @@ export default {
         this.$store.commit('modifyDrag', event);
       }
     },
+    deleteSelection(event) {
+      this.$store.commit('deleteSelection');
+    },
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+svg:focus {
+  outline-width: 0;
+}
 </style>
