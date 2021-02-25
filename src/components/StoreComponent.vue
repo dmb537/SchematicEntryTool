@@ -8,14 +8,15 @@
         :id="component.properties.componentID"
         stroke="#000">
         <title>
-          {{ component.properties.componentID }}
           {{ component.properties.componentName }}
         </title>
         <ComponentBody
           :component="component" />
         <ComponentPin v-for="pin in component.pins" :key="pin.name"
-          :properties="component.properties"
+          :component="component"
           :pin="pin" />
+        <rect id="clickBlocker" width="200" height="200"
+            x="-25" y="-25" fill-opacity="0" />
       </g>
     </svg>
   </div>

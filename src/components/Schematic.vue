@@ -1,26 +1,40 @@
 <template>
   <div>
-      <svg ref="box" class="box unselectable-text" width="100%" height="100%"
+      <svg id="svgpane" class="box unselectable-text"
+        width="100%" height="100%"
         tabindex="0"
         @mousemove="backgroundMouseMove"
-        @dblclick="$store.commit('deselectAll')"
-        @keyup.delete="deleteSelection" >
+        @dblclick="cancelActions"
+        @keyup.delete="deleteSelection">
         <SchematicComponent v-for="component in design.components"
+            :ref="component.properties.componentID"
             :key="component.properties.componentID"
             :design="design"
             :component="component">
         </SchematicComponent>
+        <SchematicNet id="currentWireVisual"
+          v-if="design.currentWire != null"
+          :design="design"
+          :net="design.currentWire">
+        </SchematicNet>
+        <SchematicNet v-for="net in design.nets"
+          :key="net.netID"
+          :design="design"
+          :net="net">
+        </SchematicNet>
       </svg>
   </div>
 </template>
 
 <script>
 import SchematicComponent from './SchematicComponent';
+import SchematicNet from './SchematicNet';
 
 export default {
   name: 'Schematic',
   components: {
     SchematicComponent,
+    SchematicNet,
   },
   props: {
     index: Number,
@@ -39,9 +53,20 @@ export default {
       if (this.design.isDragging) {
         this.$store.commit('modifyDrag', event);
       }
+      if (this.design.currentWire != null) {
+        this.$store.commit('setWireMouse', event);
+      }
     },
     deleteSelection(event) {
       this.$store.commit('deleteSelection');
+    },
+    cancelActions() {
+      if (this.design.selectedComponents.length != 0) {
+        this.$store.commit('deselectAll');
+      }
+      if (this.design.currentWire != null) {
+        this.$store.dispatch('abortWire');
+      }
     },
   },
 };

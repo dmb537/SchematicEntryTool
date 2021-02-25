@@ -2,19 +2,17 @@
   <g
     :id="component.properties.componentID"
     :transform="transform"
-    :stroke="component.properties.strokeColour"
-    @mousedown.exact="mousedownbody"
-    @mousedown.ctrl.exact="mousedownctlbody"
-    @mousemove="mousemovebody"
-    @mouseup="mouseupbody" >
+    :stroke="component.properties.strokeColour" >
     <title>
       Name: {{ component.properties.componentID }}
       Type: {{ component.properties.componentName }}
     </title>
     <ComponentBody
+      :design="design"
       :component="component" />
     <ComponentPin v-for="pin in component.pins" :key="pin.name"
-      :properties="component.properties"
+      :design="design"
+      :component="component"
       :pin="pin" />
   </g>
 </template>
@@ -45,46 +43,6 @@ export default {
     },
   },
   methods: {
-    mousedownbody(event) {
-      // Mouse down without ctrl:
-      //  If on a currently unselected component, select only that component
-      //    then drag
-      //  If on a selected component, don't change selection and drag
-      if (this.design.selectedComponents.indexOf(this.component) == -1) {
-        this.$store.commit('deselectAll');
-        this.$store.commit('select', this.component);
-      }
-      this.$store.dispatch('startDrag', event);
-    },
-    mousedownctlbody(event) {
-      // Mouse down with ctrl:
-      //  If on an unselected component, add to selection and begin drag
-      //  If on a selected component, deselect it and don't allow drag
-      if (this.design.selectedComponents.indexOf(this.component) != -1) {
-        this.$store.commit('deselect', this.component);
-      } else {
-        this.$store.commit('select', this.component);
-        this.$store.dispatch('startDrag', event);
-      }
-    },
-    mouseupbody(event) {
-      if (this.design.isSignificantDrag) {
-        this.$store.commit('applyDrag', event);
-      }
-      this.$store.commit('endDrag');
-    },
-    mousemovebody(event) {
-      if (this.design.isDragging) {
-        if (!this.design.isSignificantDrag) {
-          if (Math.abs(event.offsetX - this.design.draggedFrom.x) > 10 ||
-              Math.abs(event.offsetY - this.design.draggedFrom.y) > 10) {
-            this.$store.commit('setSignificantDrag', true);
-          }
-        } else {
-          this.$store.commit('modifyDrag', event);
-        }
-      }
-    },
   },
 };
 </script>

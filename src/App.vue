@@ -59,11 +59,13 @@ export default {
           {'index': this.designs.length,
             'name': 'New Schematic',
             'components': [],
-            'nextID': 0,
+            'nextComponentID': 0,
             'nets': [],
+            'nextNetID': 0,
             'selectedComponents': [],
             'isDragging': false,
-            'isSignificantDrag': false,
+            'currentWire': null,
+            'wireStart': null,
             'draggedFrom': {'x': 0, 'y': 0}};
       this.$store.commit('addDesign', newDesign);
       this.$store.commit('setActiveDesign', newDesign);
