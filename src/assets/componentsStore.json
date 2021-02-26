@@ -158,5 +158,53 @@
       }
     ],
     "customBodyPath": ""
+  },
+  {
+    "properties": {
+      "componentName": "Input",
+      "componentID": "preview-input",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "strokeColour": "#000",
+      "availableInputFill": "#fff",
+      "availableOutputFill": "#fff"
+    },
+    "pins": [
+      {
+        "name": "O",
+        "x": 150,
+        "y": 75,
+        "direction": "out",
+        "connectedNet": "open",
+        "componentID": "preview-input"
+      }
+    ],
+    "customBodyPath": ""
+  },
+  {
+    "properties": {
+      "componentName": "Output",
+      "componentID": "preview-output",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "strokeColour": "#000",
+      "availableInputFill": "#fff",
+      "availableOutputFill": "#fff"
+    },
+    "pins": [
+      {
+        "name": "A",
+        "x": 0,
+        "y": 75,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-output"
+      }
+    ],
+    "customBodyPath": ""
   }
 ]
