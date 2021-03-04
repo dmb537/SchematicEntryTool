@@ -52,21 +52,25 @@ export default new Vuex.Store({
       state.activeDesign.isDragging = true;
     },
     modifyDrag(state, mouseEvent) {
+      const moveX = Math.round(
+          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)+2.5)/5) * 5;
+      const moveY = Math.round(
+          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)+2.5)/5) * 5;
       state.activeDesign.selectedComponents.forEach((toDrag) => {
-        toDrag.properties.dragX =
-            mouseEvent.offsetX - state.activeDesign.draggedFrom.x;
-        toDrag.properties.dragY =
-            mouseEvent.offsetY - state.activeDesign.draggedFrom.y;
+        toDrag.properties.dragX = moveX;
+        toDrag.properties.dragY = moveY;
       });
     },
     applyDrag(state, mouseEvent) {
+      const moveX = Math.round(
+          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)+2.5)/5) * 5;
+      const moveY = Math.round(
+          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)+2.5)/5) * 5;
       state.activeDesign.selectedComponents.forEach((toDrag) => {
         toDrag.properties.x =
-            toDrag.properties.x +
-            (mouseEvent.offsetX - state.activeDesign.draggedFrom.x);
+            toDrag.properties.x + moveX;
         toDrag.properties.y =
-            toDrag.properties.y +
-            (mouseEvent.offsetY - state.activeDesign.draggedFrom.y);
+            toDrag.properties.y + moveY;
         toDrag.properties.dragX = 0;
         toDrag.properties.dragY = 0;
       });
@@ -85,8 +89,10 @@ export default new Vuex.Store({
       payload.pin.connectedNet = payload.net;
     },
     setWireMouse(state, event) {
-      state.activeDesign.currentWire.tempPosition.x = event.offsetX;
-      state.activeDesign.currentWire.tempPosition.y = event.offsetY;
+      state.activeDesign.currentWire.tempPosition.x =
+          Math.round((event.offsetX+2.5)/5) * 5;
+      state.activeDesign.currentWire.tempPosition.y =
+          Math.round((event.offsetY+2.5)/5) * 5;
     },
     addPinToNet(state, payload) {
       payload.net.connectedPins.push(payload.pin);
