@@ -118,16 +118,17 @@ export default new Vuex.Store({
         context.commit('startDrag', mouseEvent);
       }
     },
-    startWire(context, pin) {
-      context.commit('setWireStart', pin);
+    startWire(context, payload) {
+      context.commit('setWireStart', payload.pin);
       const newNet = {
         'netID': `net-${context.state.activeDesign.nextNetID}`,
-        'connectedPins': [pin],
-        'tempPosition': {'x': 0, 'y': 0},
+        'connectedPins': [payload.pin],
+        'tempPosition': {'x': payload.mouse.offsetX,
+          'y': payload.mouse.offsetY},
       };
       context.commit('setCurrentWire', newNet);
-      const payload = {'pin': pin, 'net': newNet};
-      context.commit('setConnectedNet', payload);
+      const newPayload = {'pin': payload.pin, 'net': newNet};
+      context.commit('setConnectedNet', newPayload);
     },
     abortWire(context) {
       context.state.activeDesign.currentWire.connectedPins.forEach((pin) => {

@@ -42,16 +42,16 @@ export default {
     },
   },
   methods: {
-    pinMouseClick() {
-      if (this.design.wireStart == null) {
-        // No wire has been started; start one
-        this.$store.dispatch('startWire', this.pin);
-      } else if (this.design.wireStart == this.pin) {
-        // Click same place as start, cancel wire
-        this.$store.dispatch('abortWire');
-      } else {
-        // Clicked on a different pin than start - connect them
-        this.$store.dispatch('endWire', this.pin);
+    pinMouseClick(event) {
+      // Only allow clicking on pins that aren't connected
+      if (this.pin.connectedNet == 'open') {
+        if (this.design.wireStart == null) {
+          // No wire has been started; start one
+          this.$store.dispatch('startWire', {pin: this.pin, mouse: event});
+        } else {
+          // Clicked on a different pin than start - connect them
+          this.$store.dispatch('endWire', this.pin);
+        }
       }
     },
   },
