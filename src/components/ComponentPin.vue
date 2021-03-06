@@ -43,16 +43,6 @@ export default {
   },
   methods: {
     pinMouseClick(event) {
-      // Only allow clicking on pins that aren't connected
-      if (this.pin.connectedNet == 'open') {
-        if (this.design.wireStart == null) {
-          // No wire has been started; start one
-          this.$store.dispatch('startWire', {pin: this.pin, mouse: event});
-        } else {
-          // Clicked on a different pin than start - connect them
-          this.$store.dispatch('endWire', this.pin);
-        }
-      }
     },
   },
 };

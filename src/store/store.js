@@ -79,28 +79,6 @@ export default new Vuex.Store({
       state.activeDesign.isDragging = false;
       state.activeDesign.isSignificantDrag = false;
     },
-    setWireStart(state, pin) {
-      state.activeDesign.wireStart = pin;
-    },
-    setCurrentWire(state, net) {
-      state.activeDesign.currentWire = net;
-    },
-    setConnectedNet(state, payload) { // This breaks if state is not passed
-      payload.pin.connectedNet = payload.net;
-    },
-    setWireMouse(state, event) {
-      state.activeDesign.currentWire.tempPosition.x =
-          Math.round((event.offsetX+2.5)/5) * 5;
-      state.activeDesign.currentWire.tempPosition.y =
-          Math.round((event.offsetY+2.5)/5) * 5;
-    },
-    addPinToNet(state, payload) {
-      payload.net.connectedPins.push(payload.pin);
-    },
-    saveNet(state) {
-      state.activeDesign.nextNetID += 1;
-      state.activeDesign.nets.push(state.activeDesign.currentWire);
-    },
   },
   actions: {
     addNewComponent(context, component) {
@@ -117,36 +95,6 @@ export default new Vuex.Store({
       if (!context.state.activeDesign.isDragging) {
         context.commit('startDrag', mouseEvent);
       }
-    },
-    startWire(context, payload) {
-      context.commit('setWireStart', payload.pin);
-      const newNet = {
-        'netID': `net-${context.state.activeDesign.nextNetID}`,
-        'connectedPins': [payload.pin],
-        'tempPosition': {'x': payload.mouse.offsetX,
-          'y': payload.mouse.offsetY},
-      };
-      context.commit('setCurrentWire', newNet);
-      const newPayload = {'pin': payload.pin, 'net': newNet};
-      context.commit('setConnectedNet', newPayload);
-    },
-    abortWire(context) {
-      context.state.activeDesign.currentWire.connectedPins.forEach((pin) => {
-        const payload = {'pin': pin, 'net': 'open'};
-        context.commit('setConnectedNet', payload);
-      });
-      context.commit('setCurrentWire', null);
-      context.commit('setWireStart', null);
-    },
-    endWire(context, pin) {
-      let payload =
-          {'pin': pin, 'net': context.state.activeDesign.currentWire};
-      context.commit('setConnectedNet', payload);
-      payload = {'net': context.state.activeDesign.currentWire, 'pin': pin};
-      context.commit('addPinToNet', payload);
-      context.commit('saveNet');
-      context.commit('setCurrentWire', null);
-      context.commit('setWireStart', null);
     },
   },
 });

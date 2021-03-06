@@ -64,8 +64,6 @@ export default {
             'nextNetID': 0,
             'selectedComponents': [],
             'isDragging': false,
-            'currentWire': null,
-            'wireStart': null,
             'draggedFrom': {'x': 0, 'y': 0}};
       this.$store.commit('addDesign', newDesign);
       this.$store.commit('setActiveDesign', newDesign);

@@ -12,11 +12,6 @@
             :design="design"
             :component="component">
         </SchematicComponent>
-        <SchematicNet id="currentWireVisual"
-          v-if="design.currentWire != null"
-          :design="design"
-          :net="design.currentWire">
-        </SchematicNet>
         <SchematicNet v-for="net in design.nets"
           :key="net.netID"
           :design="design"
@@ -53,9 +48,6 @@ export default {
       if (this.design.isDragging) {
         this.$store.commit('modifyDrag', event);
       }
-      if (this.design.currentWire != null) {
-        this.$store.commit('setWireMouse', event);
-      }
     },
     deleteSelection(event) {
       this.$store.commit('deleteSelection');
@@ -63,9 +55,6 @@ export default {
     cancelActions() {
       if (this.design.selectedComponents.length != 0) {
         this.$store.commit('deselectAll');
-      }
-      if (this.design.currentWire != null) {
-        this.$store.dispatch('abortWire');
       }
     },
   },

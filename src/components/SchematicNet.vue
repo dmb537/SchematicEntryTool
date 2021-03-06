@@ -18,31 +18,7 @@ export default {
   },
   computed: {
     computedSVG: function() {
-      // If components are selected then recompute if dragX or Y change
-      // (computed functions reevaluate if a dependency changes)
-      if (this.design.selectedComponents.length != 0) {
-        this.design.selectedComponents[0].properties.dragX;
-        this.design.selectedComponents[0].properties.dragY;
-      }
-
-      let svg = '<polyline points=\"';
-      if (this.design.currentWire == this.net) {
-        this.net.connectedPins.forEach((pin) => {
-          const pos = this.getPosition(document.getElementById(
-              `${pin.componentID}:${pin.name}`));
-          svg += `${pos.x},${pos.y} `;
-        });
-        svg += `${this.net.tempPosition.x - 1},${this.net.tempPosition.y - 1} `;
-        svg += '\" stroke=\"black\" />';
-      } else {
-        this.net.connectedPins.forEach((pin) => {
-          const pos = this.getPosition(document.getElementById(
-              `${pin.componentID}:${pin.name}`));
-          svg += `${pos.x},${pos.y} `;
-        });
-        svg += '\" stroke=\"black\" />';
-      }
-      return svg;
+      return '';
     },
   },
   methods: {
