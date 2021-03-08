@@ -62,6 +62,8 @@ export default {
             'nextComponentID': 0,
             'nets': [],
             'nextNetID': 0,
+            'ghostWire': null,
+            'ghostNet': null,
             'selectedComponents': [],
             'isDragging': false,
             'draggedFrom': {'x': 0, 'y': 0}};

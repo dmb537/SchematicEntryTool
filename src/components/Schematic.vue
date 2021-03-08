@@ -4,7 +4,8 @@
         width="100%" height="100%"
         tabindex="0"
         @mousemove="backgroundMouseMove"
-        @dblclick="cancelActions"
+        @click="backgroundClick"
+        @keyup.esc="cancelActions"
         @keyup.delete="deleteSelection">
         <SchematicComponent v-for="component in design.components"
             :ref="component.properties.componentID"
@@ -12,6 +13,16 @@
             :design="design"
             :component="component">
         </SchematicComponent>
+        <SchematicGhostWire id="ghostWire"
+          v-if="design.ghostWire != null"
+          :design="design"
+          :ghostWire="design.ghostWire">
+        </SchematicGhostWire>
+        <SchematicNet id="ghostNet"
+          v-if="design.ghostNet != null"
+          :design="design"
+          :net="design.ghostNet">
+        </SchematicNet>
         <SchematicNet v-for="net in design.nets"
           :key="net.netID"
           :design="design"
@@ -24,12 +35,14 @@
 <script>
 import SchematicComponent from './SchematicComponent';
 import SchematicNet from './SchematicNet';
+import SchematicGhostWire from './SchematicGhostWire';
 
 export default {
   name: 'Schematic',
   components: {
     SchematicComponent,
     SchematicNet,
+    SchematicGhostWire,
   },
   props: {
     index: Number,
@@ -44,9 +57,17 @@ export default {
     };
   },
   methods: {
+    backgroundClick(event) {
+      if (this.design.ghostWire != null) {
+        this.$store.dispatch('addNodeToGhostNet', event);
+      }
+    },
     backgroundMouseMove(event) {
       if (this.design.isDragging) {
         this.$store.commit('modifyDrag', event);
+      }
+      if (this.design.ghostWire != null) {
+        this.$store.commit('moveGhostWireEnd', event);
       }
     },
     deleteSelection(event) {
@@ -55,6 +76,9 @@ export default {
     cancelActions() {
       if (this.design.selectedComponents.length != 0) {
         this.$store.commit('deselectAll');
+      }
+      if (this.design.ghostWire != null) {
+        this.$store.dispatch('abortGhostNet');
       }
     },
   },

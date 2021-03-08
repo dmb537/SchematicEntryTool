@@ -53,9 +53,9 @@ export default new Vuex.Store({
     },
     modifyDrag(state, mouseEvent) {
       const moveX = Math.round(
-          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)+2.5)/5) * 5;
+          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)-2.5)/5) * 5;
       const moveY = Math.round(
-          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)+2.5)/5) * 5;
+          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)-2.5)/5) * 5;
       state.activeDesign.selectedComponents.forEach((toDrag) => {
         toDrag.properties.dragX = moveX;
         toDrag.properties.dragY = moveY;
@@ -63,9 +63,9 @@ export default new Vuex.Store({
     },
     applyDrag(state, mouseEvent) {
       const moveX = Math.round(
-          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)+2.5)/5) * 5;
+          ((mouseEvent.offsetX - state.activeDesign.draggedFrom.x)-2.5)/5) * 5;
       const moveY = Math.round(
-          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)+2.5)/5) * 5;
+          ((mouseEvent.offsetY - state.activeDesign.draggedFrom.y)-2.5)/5) * 5;
       state.activeDesign.selectedComponents.forEach((toDrag) => {
         toDrag.properties.x =
             toDrag.properties.x + moveX;
@@ -78,6 +78,27 @@ export default new Vuex.Store({
     endDrag(state) {
       state.activeDesign.isDragging = false;
       state.activeDesign.isSignificantDrag = false;
+    },
+    setConnectedNet(state, payload) { // This breaks if state is not passed
+      payload.pin.connectedNet = payload.net;
+    },
+    setGhostWire(state, ghostWire) {
+      state.activeDesign.ghostWire = ghostWire;
+    },
+    setGhostNet(state, ghostNet) {
+      state.activeDesign.ghostNet = ghostNet;
+    },
+    moveGhostWireEnd(state, event) {
+      state.activeDesign.ghostWire.end.x =
+          Math.round((event.offsetX-2.5)/5)*5;
+      state.activeDesign.ghostWire.end.y =
+          Math.round((event.offsetY-2.5)/5)*5;
+    },
+    addNodeToNet(state, payload) {
+      payload.net.nodes.push(payload.node);
+    },
+    addSegmentToNet(state, payload) {
+      payload.net.segments.push(payload.segment);
     },
   },
   actions: {
@@ -95,6 +116,67 @@ export default new Vuex.Store({
       if (!context.state.activeDesign.isDragging) {
         context.commit('startDrag', mouseEvent);
       }
+    },
+    startGhostWire(context, payload) {
+      context.commit('setConnectedNet', {pin: payload.pin, net: 'ghostnet'});
+      const newWireSegment = {
+        start:
+          {type: 'pin', pin: payload.pin},
+        end:
+          {type: 'point',
+            x: Math.round((payload.event.offsetX-2.5)/5)*5,
+            y: Math.round((payload.event.offsetY-2.5)/5)*5,
+          },
+      };
+      context.commit('setGhostWire', newWireSegment);
+      const newNet = {
+        pins: [payload.pin],
+        nodes: [],
+        segments: [],
+      };
+      context.commit('setGhostNet', newNet);
+    },
+    addNodeToGhostNet(context, event) {
+      // Create new node at click point
+      const newNode = {
+        x: Math.round((event.offsetX-2.5)/5)*5,
+        y: Math.round((event.offsetY-2.5)/5)*5,
+      };
+      context.commit('addNodeToNet',
+          {node: newNode, net: context.state.activeDesign.ghostNet});
+      // Terminate previous segment at node and add as a segment
+      const newSegment = {
+        start: context.state.activeDesign.ghostWire.start,
+        end:
+          {type: 'node', node: newNode},
+      };
+      context.commit('addSegmentToNet',
+          {segment: newSegment, net: context.state.activeDesign.ghostNet});
+      // Create new wire segment starting node
+      const newGhostWire = {
+        start:
+        {type: 'node', node: newNode},
+        end:
+          {type: 'point',
+            x: Math.round((event.offsetX-2.5)/5)*5,
+            y: Math.round((event.offsetY-2.5)/5)*5,
+          },
+      };
+      context.commit('setGhostWire', newGhostWire);
+    },
+    abortGhostNet(context) {
+      // Disconnect all pins from the ghost net
+      context.state.activeDesign.ghostNet.pins.forEach((pin) => {
+        context.commit('setConnectedNet',
+            {pin: pin, net: 'open'});
+      });
+      if (context.state.activeDesign.ghostWire.start.type == 'pin') {
+        context.commit('setConnectedNet',
+            {pin: context.state.activeDesign.ghostWire.start.pin, net: 'open'});
+      }
+      // Delete the ghost net
+      context.commit('setGhostWire', null);
+      context.commit('setGhostNet', null);
     },
   },
 });
