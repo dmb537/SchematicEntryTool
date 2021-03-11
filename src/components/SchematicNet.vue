@@ -1,16 +1,21 @@
 <template>
-  <g
-    :id="net.netID"
-    v-html="computedSVG">
+  <g :id="net.netID">
+    <g v-html="computedSVG" />
+    <SchematicNetNode v-for="node in net.nodes"
+      :key="'' + net.netID + node.x + node.y"
+      :design="design"
+      :node="node" />
   </g>
 </template>
 
 
 <script>
+import SchematicNetNode from './SchematicNetNode';
 
 export default {
   name: 'SchematicNet',
   components: {
+    SchematicNetNode,
   },
   props: {
     design: Object,
@@ -33,6 +38,8 @@ export default {
       this.net.segments.forEach((segment) => {
         let start = {};
         let end = {};
+        let dx = 0;
+        let dy = 0;
         if (segment.start.type == 'pin') {
           start = this.getPositionOfPin(segment.start.pin);
         } else {
@@ -43,8 +50,22 @@ export default {
         } else {
           end = segment.end.node;
         }
-        svg += `<line x1=${start.x} y1=${start.y}
-            x2=${end.x} y2=${end.y} stroke='black' />`;
+
+        dx = end.x - start.x;
+        dy = end.y - start.y;
+        svg += '<polyline fill="none" stroke="black" points="';
+        if (Math.abs(dx) > Math.abs(dy)) {
+          svg += `${start.x},${start.y}
+              ${start.x + dx/2},${start.y}
+              ${start.x + dx/2},${end.y}
+              ${end.x},${end.y}`;
+        } else {
+          svg += `${start.x},${start.y}
+              ${start.x},${start.y + dy/2}
+              ${end.x},${start.y + dy/2}
+              ${end.x},${end.y}`;
+        }
+        svg += '" />';
       });
       return svg;
     },
