@@ -1,10 +1,11 @@
 <template>
   <div id="app">
+    <button @click="test"> Test </button>
     <ComponentPane
       :components="componentLibrary">
     </ComponentPane>
     <div id="viewer">
-      <ul id="tab-selector" class='unselectable-text'>
+      <ul id="tab-selector" class='unselectable-text' @click="rerender">
         <li v-for="design in designs"
           :key="design.index"
           :index="design.index"
@@ -16,10 +17,8 @@
           +
         </li>
       </ul>
-      <Schematic v-for="design in designs"
-        :key="design.index"
-        :index="design.index"
-        v-show="activeDesign == design"
+      <Schematic v-if="activeDesign"
+        :design="activeDesign"
         class='schematic-view'>
       </Schematic>
     </div>
@@ -30,6 +29,7 @@
 import ComponentPane from './components/ComponentPane.vue';
 import Schematic from './components/Schematic.vue';
 import componentsStore from './assets/componentsStore';
+import {parse, stringify} from 'flatted';
 
 export default {
   name: 'App',
@@ -58,6 +58,7 @@ export default {
       const newDesign =
           {'index': this.designs.length,
             'name': 'New Schematic',
+            'rerender': 0,
             'components': [],
             'nextComponentID': 0,
             'nets': [],
@@ -70,29 +71,15 @@ export default {
       this.$store.commit('addDesign', newDesign);
       this.$store.commit('setActiveDesign', newDesign);
     },
-    selectComponents(components) {
-      components.forEach((toSelect) => {
-        toSelect.properties.strokeColour = '#00F';
+    rerender() {
+      this.$nextTick(() => {
+        this.$store.commit('incrementRerender');
       });
     },
-    deselectComponents(components) {
-      components.forEach((toDeselect) => {
-        toDeselect.properties.strokeColour = '#000';
-      });
-    },
-    modifyDrag(components, dragX, dragY) {
-      components.forEach((toDrag) => {
-        toDrag.properties.dragX = dragX;
-        toDrag.properties.dragY = dragY;
-      });
-    },
-    applyDrag(components, dragX, dragY) {
-      components.forEach((toDrag) => {
-        toDrag.properties.x = toDrag.properties.x + dragX;
-        toDrag.properties.y = toDrag.properties.y + dragY;
-        toDrag.properties.dragX = 0;
-        toDrag.properties.dragY = 0;
-      });
+    test() {
+      this.$store.commit('overwriteState',
+          parse(stringify(this.$store.state)));
+      console.log(stringify(this.$store.state));
     },
   },
 };

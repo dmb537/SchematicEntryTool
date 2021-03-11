@@ -24,7 +24,7 @@
           :net="design.ghostNet">
         </SchematicNet>
         <SchematicNet v-for="net in design.nets"
-          :key="net.netID"
+          :key="design.index + ':' + net.netID"
           :design="design"
           :net="net">
         </SchematicNet>
@@ -45,12 +45,9 @@ export default {
     SchematicGhostWire,
   },
   props: {
-    index: Number,
+    design: Object,
   },
   computed: {
-    design() {
-      return this.$store.state.designs[this.index];
-    },
   },
   data() {
     return {

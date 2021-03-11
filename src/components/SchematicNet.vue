@@ -19,7 +19,11 @@ export default {
   computed: {
     computedSVG: function() {
       let svg = '';
-      // Force recompute on component drag
+
+      // Force recompute when active design changes
+      this.design.index;
+      this.design.rerender;
+      // Force recompute when a component moves
       if (this.design.selectedComponents.length != 0) {
         this.design.selectedComponents[0].properties.dragX;
         this.design.selectedComponents[0].properties.dragY;
@@ -42,8 +46,6 @@ export default {
         svg += `<line x1=${start.x} y1=${start.y}
             x2=${end.x} y2=${end.y} stroke='black' />`;
       });
-
-      // Go through each line segment and create a line for each
       return svg;
     },
   },

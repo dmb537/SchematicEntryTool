@@ -100,6 +100,18 @@ export default new Vuex.Store({
     addSegmentToNet(state, payload) {
       payload.net.segments.push(payload.segment);
     },
+    overwriteState(state, newState) {
+      state = newState;
+    },
+    addNetToDesign(state, net) {
+      state.activeDesign.nets.push(net);
+    },
+    incrementNetID(state) {
+      state.activeDesign.nextNetID += 1;
+    },
+    incrementRerender(state) {
+      state.activeDesign.rerender += 1;
+    },
   },
   actions: {
     addNewComponent(context, component) {
@@ -118,7 +130,16 @@ export default new Vuex.Store({
       }
     },
     startGhostWire(context, payload) {
-      context.commit('setConnectedNet', {pin: payload.pin, net: 'ghostnet'});
+      const newNet = {
+        netID: context.state.activeDesign.nextNetID,
+        pins: [payload.pin],
+        nodes: [],
+        segments: [],
+      };
+      context.commit('setGhostNet', newNet);
+      context.commit('incrementNetID');
+      context.commit('setConnectedNet',
+          {pin: payload.pin, net: context.state.activeDesign.ghostNet});
       const newWireSegment = {
         start:
           {type: 'pin', pin: payload.pin},
@@ -129,12 +150,6 @@ export default new Vuex.Store({
           },
       };
       context.commit('setGhostWire', newWireSegment);
-      const newNet = {
-        pins: [payload.pin],
-        nodes: [],
-        segments: [],
-      };
-      context.commit('setGhostNet', newNet);
     },
     addNodeToGhostNet(context, event) {
       // Create new node at click point
@@ -175,6 +190,24 @@ export default new Vuex.Store({
             {pin: context.state.activeDesign.ghostWire.start.pin, net: 'open'});
       }
       // Delete the ghost net
+      context.commit('setGhostWire', null);
+      context.commit('setGhostNet', null);
+    },
+    endGhostNetAtPin(context, pin) {
+      // Make the pin know it is connected
+      context.commit('setConnectedNet',
+          {pin: pin, net: context.state.activeDesign.ghostNet});
+      // Terminate current segment at pin and add it to the net
+      const newSegment = {
+        start: context.state.activeDesign.ghostWire.start,
+        end:
+          {type: 'pin', pin: pin},
+      };
+      context.commit('addSegmentToNet',
+          {segment: newSegment, net: context.state.activeDesign.ghostNet});
+      // Push the net to the array of completed nets
+      context.commit('addNetToDesign', context.state.activeDesign.ghostNet);
+      // Clear the ghost wire and net
       context.commit('setGhostWire', null);
       context.commit('setGhostNet', null);
     },

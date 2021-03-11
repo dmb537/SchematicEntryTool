@@ -1,7 +1,7 @@
 <template>
   <g v-html="pinSVG" class="component-pin"
     :id="computedID"
-    @click="pinMouseClick" />
+    @click.stop="pinMouseClick" />
 </template>
 
 <script>
@@ -48,6 +48,7 @@ export default {
       if (this.design.ghostWire != null && this.pin.connectedNet == 'open') {
         // If we are currently adding a wire then clicking on
         // an unconnected pin should terminate the wire at that pin
+        this.$store.dispatch('endGhostNetAtPin', this.pin);
       }
     },
   },
