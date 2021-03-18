@@ -2,7 +2,7 @@
   <g :id="net.netID">
     <g v-html="computedSVG" />
     <SchematicNetNode v-for="node in net.nodes"
-      :key="'' + net.netID + node.x + node.y"
+      :key="'' + net.netID + node.properties.x + node.properties.y"
       :design="design"
       :node="node" />
   </g>
@@ -43,12 +43,22 @@ export default {
         if (segment.start.type == 'pin') {
           start = this.getPositionOfPin(segment.start.pin);
         } else {
-          start = segment.start.node;
+          start = {
+            x: segment.start.node.properties.x +
+                segment.start.node.properties.dragX,
+            y: segment.start.node.properties.y +
+                segment.start.node.properties.dragY,
+          };
         }
         if (segment.end.type == 'pin') {
           end = this.getPositionOfPin(segment.end.pin);
         } else {
-          end = segment.end.node;
+          end = {
+            x: segment.end.node.properties.x +
+                segment.end.node.properties.dragX,
+            y: segment.end.node.properties.y +
+                segment.end.node.properties.dragY,
+          };
         }
 
         dx = end.x - start.x;

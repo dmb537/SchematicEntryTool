@@ -1,6 +1,12 @@
 <template>
   <div id="app">
-    <button @click="test"> Test </button>
+    <div id="controls">
+      <button @click="save"> Save </button>
+      <input id="fileSelector" type='file' accept='.dbsim'
+          style="display: none"
+          @change="load">
+      <button @click="triggerLoad"> Load </button>
+    </div>
     <ComponentPane
       :components="componentLibrary">
     </ComponentPane>
@@ -29,7 +35,8 @@
 import ComponentPane from './components/ComponentPane.vue';
 import Schematic from './components/Schematic.vue';
 import componentsStore from './assets/componentsStore';
-import {parse, stringify} from 'flatted';
+import {stringify, parse} from 'flatted';
+import {saveAs} from 'file-saver';
 
 export default {
   name: 'App',
@@ -76,10 +83,41 @@ export default {
         this.$store.commit('incrementRerender');
       });
     },
-    test() {
-      this.$store.commit('overwriteState',
-          parse(stringify(this.$store.state)));
-      console.log(stringify(this.$store.state));
+    save() {
+      saveAs(new File([stringify(this.$store.state)],
+          `${new Date().toISOString()}.dbsim`,
+          {type: 'application/json'}));
+    },
+    load() {
+      const fileSelector = document.getElementById('fileSelector');
+      if (fileSelector.value != '') {
+        this.readFileWithPromise(fileSelector.files[0]).then(
+            (result) => {
+              this.$store.commit('overwriteState',
+                  parse(result));
+              this.rerender;
+            },
+            (error) => {
+              console.log('error');
+            },
+        );
+      }
+    },
+    readFileWithPromise(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = ((res) => {
+          resolve(res.target.result);
+        });
+        reader.onerror = ((err) => {
+          reject(err);
+        });
+        reader.readAsText(file);
+      });
+    },
+    triggerLoad() {
+      document.getElementById('fileSelector').click();
     },
   },
 };
@@ -102,6 +140,10 @@ html, body {
   height: 100vh;
   width: 100vw;
   overflow: auto;
+}
+#controls {
+  display: flex;
+  flex-direction: column;
 }
 #component-pane {
   color: #ffffff;

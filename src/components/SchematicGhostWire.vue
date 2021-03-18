@@ -31,7 +31,8 @@ export default {
       if (this.ghostWire.start.type == 'pin') {
         return this.pinPosition;
       } else if (this.ghostWire.start.type == 'node') {
-        return {x: this.ghostWire.start.node.x, y: this.ghostWire.start.node.y};
+        return {x: this.ghostWire.start.node.properties.x,
+          y: this.ghostWire.start.node.properties.y};
       } else {
         return {x: 0, y: 0};
       }

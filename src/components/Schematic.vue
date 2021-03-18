@@ -5,6 +5,7 @@
         tabindex="0"
         @mousemove="backgroundMouseMove"
         @click="backgroundClick"
+        @mouseup="backgroundMouseUp"
         @keyup.esc="cancelActions"
         @keyup.delete="deleteSelection">
         <SchematicComponent v-for="component in design.components"
@@ -66,6 +67,12 @@ export default {
       if (this.design.ghostWire != null) {
         this.$store.commit('moveGhostWireEnd', event);
       }
+    },
+    backgroundMouseUp(event) {
+      if (this.design.isSignificantDrag) {
+        this.$store.commit('applyDrag', event);
+      }
+      this.$store.commit('endDrag');
     },
     deleteSelection(event) {
       this.$store.commit('deleteSelection');

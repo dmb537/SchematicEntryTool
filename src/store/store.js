@@ -101,7 +101,8 @@ export default new Vuex.Store({
       payload.net.segments.push(payload.segment);
     },
     overwriteState(state, newState) {
-      state = newState;
+      state.designs = newState.designs;
+      state.activeDesign = newState.activeDesign;
     },
     addNetToDesign(state, net) {
       state.activeDesign.nets.push(net);
@@ -154,8 +155,13 @@ export default new Vuex.Store({
     addNodeToGhostNet(context, event) {
       // Create new node at click point
       const newNode = {
-        x: Math.round((event.offsetX-2.5)/5)*5,
-        y: Math.round((event.offsetY-2.5)/5)*5,
+        properties: {
+          x: Math.round((event.offsetX-2.5)/5)*5,
+          y: Math.round((event.offsetY-2.5)/5)*5,
+          dragX: 0,
+          dragY: 0,
+          strokeColour: '#000',
+        },
       };
       context.commit('addNodeToNet',
           {node: newNode, net: context.state.activeDesign.ghostNet});
