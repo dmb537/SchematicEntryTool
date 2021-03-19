@@ -95,7 +95,7 @@ export default {
             (result) => {
               this.$store.commit('overwriteState',
                   parse(result));
-              this.rerender;
+              this.rerender();
             },
             (error) => {
               console.log('error');
@@ -106,7 +106,6 @@ export default {
     readFileWithPromise(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
         reader.onload = ((res) => {
           resolve(res.target.result);
         });
