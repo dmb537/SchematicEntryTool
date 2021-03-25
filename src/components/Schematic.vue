@@ -9,8 +9,7 @@
         @keyup.esc="cancelActions"
         @keyup.delete="deleteSelection">
         <SchematicComponent v-for="component in design.components"
-            :ref="component.properties.componentID"
-            :key="component.properties.componentID"
+            :key="design.id + ':' + component.properties.componentID"
             :design="design"
             :component="component">
         </SchematicComponent>
@@ -25,7 +24,7 @@
           :net="design.ghostNet">
         </SchematicNet>
         <SchematicNet v-for="net in design.nets"
-          :key="design.index + ':' + net.netID"
+          :key="design.id + ':' + net.netID"
           :design="design"
           :net="net">
         </SchematicNet>

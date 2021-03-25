@@ -22,7 +22,7 @@ export default {
       let svg = '';
 
       // Force recompute when active design changes
-      this.design.index;
+      this.design.id;
       this.design.rerender;
       // Force recompute when a component moves
       if (this.design.selectedComponents.length != 0) {

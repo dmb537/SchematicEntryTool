@@ -132,7 +132,7 @@ export default new Vuex.Store({
     },
     startGhostWire(context, payload) {
       const newNet = {
-        netID: context.state.activeDesign.nextNetID,
+        netID: 'net-' + context.state.activeDesign.nextNetID,
         pins: [payload.pin],
         nodes: [],
         segments: [],

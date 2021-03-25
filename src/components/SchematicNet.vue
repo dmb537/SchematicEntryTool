@@ -1,8 +1,13 @@
 <template>
   <g :id="net.netID">
-    <g v-html="computedSVG" />
-    <SchematicNetNode v-for="node in net.nodes"
-      :key="'' + net.netID + node.properties.x + node.properties.y"
+    <SchematicNetSegment v-for="(segment, index) in net.segments"
+      :key="net.netID + ':segment-' + index + ':'
+          + segment.start.type + '-' + segment.end.type"
+      :design="design"
+      :segment="segment" />
+    <SchematicNetNode v-for="(node, index) in net.nodes"
+      :key="net.netID + ':node-' + index + ':'
+          + node.properties.x + ',' +  node.properties.y"
       :design="design"
       :node="node" />
   </g>
@@ -11,11 +16,13 @@
 
 <script>
 import SchematicNetNode from './SchematicNetNode';
+import SchematicNetSegment from './SchematicNetSegment';
 
 export default {
   name: 'SchematicNet',
   components: {
     SchematicNetNode,
+    SchematicNetSegment,
   },
   props: {
     design: Object,
@@ -26,7 +33,7 @@ export default {
       let svg = '';
 
       // Force recompute when active design changes
-      this.design.index;
+      this.design.id;
       this.design.rerender;
       // Force recompute when a component moves
       if (this.design.selectedComponents.length != 0) {

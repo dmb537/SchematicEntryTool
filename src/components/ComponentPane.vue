@@ -1,7 +1,5 @@
 <template>
   <div id="component-pane">
-    <!--<button v-on:click="$emit('draw-shape')">Add Rectangle</button>
-    <button v-on:click="$emit('remove-shape')">Remove Last</button>-->
     <div width="100%"
         class="unselectable-text">
       Provided Components
@@ -11,19 +9,30 @@
       :component="component"
       >
     </StoreComponent>
+    <div width="100%"
+        class="unselectable-text">
+      Generated Components
+    </div>
+    <GeneratedComponent v-for="design in designs"
+      :key="design.id"
+      >
+    </GeneratedComponent>
   </div>
 </template>
 
 <script>
 import StoreComponent from './StoreComponent.vue';
+import GeneratedComponent from './GeneratedComponent.vue';
 
 export default {
   name: 'ComponentPane',
   components: {
     StoreComponent,
+    GeneratedComponent,
   },
   props: {
     components: Array,
+    designs: Array,
   },
   methods: {
   },

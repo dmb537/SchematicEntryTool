@@ -8,16 +8,27 @@
       <button @click="triggerLoad"> Load </button>
     </div>
     <ComponentPane
-      :components="componentLibrary">
+      :components="componentLibrary"
+      :designs="designs">
     </ComponentPane>
     <div id="viewer">
       <ul id="tab-selector" class='unselectable-text' @click="rerender">
         <li v-for="design in designs"
-          :key="design.index"
-          :index="design.index"
+          :key="design.id"
           :class='{"selected": (activeDesign == design)}'
           @click="$store.commit('setActiveDesign', design)">
           {{ design.name }}
+          <div v-if="activeDesign == design"
+              style="display: flex; flex-direction: row;">
+            <div style="text-align: left; flex-grow: 1;"
+                @click="renameDesign(design)">
+              <small> Rename </small>
+            </div>
+            <div style="text-align: right; flex-grow: 1;"
+                @click="deleteDesign(design)">
+              <small> Delete </small>
+            </div>
+          </div>
         </li>
         <li @click="addNewDesign">
           +
@@ -28,12 +39,23 @@
         class='schematic-view'>
       </Schematic>
     </div>
+    <Popup v-if="isRenaming"
+        @close="isRenaming = false">
+        <template #header>
+          Rename design
+        </template>
+    </Popup>
+    <Popup v-if="isDeleting"
+        @close="isDeleting = false">
+    </Popup>
   </div>
 </template>
 
 <script>
 import ComponentPane from './components/ComponentPane.vue';
+import Popup from './components/Popup';
 import Schematic from './components/Schematic.vue';
+
 import componentsStore from './assets/componentsStore';
 import {stringify, parse} from 'flatted';
 import {saveAs} from 'file-saver';
@@ -43,10 +65,13 @@ export default {
   components: {
     ComponentPane,
     Schematic,
+    Popup,
   },
   data() {
     return {
       componentLibrary: componentsStore,
+      isRenaming: false,
+      isDeleting: false,
     };
   },
   computed: {
@@ -63,7 +88,7 @@ export default {
   methods: {
     addNewDesign() {
       const newDesign =
-          {'index': this.designs.length,
+          {'id': Date.now(),
             'name': 'New Schematic',
             'rerender': 0,
             'components': [],
@@ -98,7 +123,7 @@ export default {
               this.rerender();
             },
             (error) => {
-              console.log('error');
+              console.log('error:' + error);
             },
         );
       }
@@ -117,6 +142,12 @@ export default {
     },
     triggerLoad() {
       document.getElementById('fileSelector').click();
+    },
+    renameDesign(design) {
+      this.isRenaming = true;
+    },
+    deleteDesign(design) {
+      this.isDeleting = true;
     },
   },
 };
