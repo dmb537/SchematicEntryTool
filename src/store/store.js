@@ -113,6 +113,9 @@ export default new Vuex.Store({
     incrementRerender(state) {
       state.activeDesign.rerender += 1;
     },
+    renameActiveDesign(state, newName) {
+      state.activeDesign.name = newName;
+    },
   },
   actions: {
     addNewComponent(context, component) {

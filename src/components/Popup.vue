@@ -22,7 +22,7 @@
           class="btn"
           @click="close"
         >
-          Close popup
+          Close
         </button>
       </footer>
     </div>

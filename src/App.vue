@@ -40,9 +40,25 @@
       </Schematic>
     </div>
     <Popup v-if="isRenaming"
-        @close="isRenaming = false">
+        @close="isRenaming = false; newName = ''">
         <template #header>
           Rename design
+        </template>
+        <template #body>
+          <input v-model="newName"
+            :placeholder="activeDesign.name">
+          <button @click="executeRenameDesign"
+            :disabled="nameIsUsed">
+            Submit
+          </button>
+          <div>
+            <small v-show="nameIsUsed">
+              Name already in use
+            </small>
+          </div>
+        </template>
+        <template #footer>
+          <div />
         </template>
     </Popup>
     <Popup v-if="isDeleting"
@@ -72,6 +88,7 @@ export default {
       componentLibrary: componentsStore,
       isRenaming: false,
       isDeleting: false,
+      newName: '',
     };
   },
   computed: {
@@ -80,6 +97,9 @@ export default {
     },
     activeDesign() {
       return this.$store.state.activeDesign;
+    },
+    nameIsUsed() {
+      return this.designs.some((design) => design.name === this.newName);
     },
   },
   mounted() {
@@ -143,11 +163,16 @@ export default {
     triggerLoad() {
       document.getElementById('fileSelector').click();
     },
-    renameDesign(design) {
+    renameDesign() {
       this.isRenaming = true;
     },
-    deleteDesign(design) {
+    deleteDesign() {
       this.isDeleting = true;
+    },
+    executeRenameDesign() {
+      this.$store.commit('renameActiveDesign', this.newName);
+      this.newName = '',
+      this.isRenaming = false;
     },
   },
 };
@@ -215,6 +240,9 @@ html, body {
   display: inline-block;
   cursor: pointer;
   white-space: nowrap;
+  min-width: 100px;
+  flex-shrink: 0;
+  text-align: center;
 }
 
 #tab-selector > li.selected {
