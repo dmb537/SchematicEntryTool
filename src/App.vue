@@ -30,7 +30,8 @@
             </div>
           </div>
         </li>
-        <li @click="addNewDesign">
+        <li @click="addNewDesign"
+            class="addNew">
           +
         </li>
       </ul>
@@ -99,7 +100,8 @@ export default {
       return this.$store.state.activeDesign;
     },
     nameIsUsed() {
-      return this.designs.some((design) => design.name === this.newName);
+      return (this.designs.some((design) => design.name === this.newName) ||
+          this.newName === 'New Schematic');
     },
   },
   mounted() {
@@ -240,13 +242,18 @@ html, body {
   display: inline-block;
   cursor: pointer;
   white-space: nowrap;
-  min-width: 100px;
+  min-width: 120px;
   flex-shrink: 0;
   text-align: center;
 }
 
 #tab-selector > li.selected {
   background-color:#001955
+}
+
+#tab-selector > li.addNew {
+  text-align: left;
+  min-width: 0px;
 }
 
 .unselectable-text {
