@@ -121,7 +121,7 @@
   },
   {
     "properties": {
-      "componentName": "Test",
+      "componentName": "TEST",
       "componentID": "preview-test",
       "x": 0,
       "y": 0,
@@ -161,7 +161,7 @@
   },
   {
     "properties": {
-      "componentName": "Input",
+      "componentName": "INPUT",
       "componentID": "preview-input",
       "x": 0,
       "y": 0,
@@ -185,7 +185,7 @@
   },
   {
     "properties": {
-      "componentName": "Output",
+      "componentName": "OUTPUT",
       "componentID": "preview-output",
       "x": 0,
       "y": 0,

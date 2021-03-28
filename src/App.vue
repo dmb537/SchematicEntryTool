@@ -64,6 +64,21 @@
     </Popup>
     <Popup v-if="isDeleting"
         @close="isDeleting = false">
+        <template #header>
+          Delete design
+        </template>
+        <template #body>
+          Please enter the name of the design to delete it<br><br>
+          <input v-model="deleteName"
+            :placeholder="activeDesign.name">
+          <button @click="executeDeleteDesign"
+            :disabled="deleteName !== activeDesign.name">
+            Delete
+          </button>
+        </template>
+        <template #footer>
+          <div />
+        </template>
     </Popup>
   </div>
 </template>
@@ -90,6 +105,7 @@ export default {
       isRenaming: false,
       isDeleting: false,
       newName: '',
+      deleteName: '',
     };
   },
   computed: {
@@ -100,7 +116,12 @@ export default {
       return this.$store.state.activeDesign;
     },
     nameIsUsed() {
+      // Name is invalid if it is used by an existing design,
+      // is the default new schematic name, or is used as a name
+      // in the component store
       return (this.designs.some((design) => design.name === this.newName) ||
+          this.componentLibrary.some((component) =>
+            component.properties.componentName === this.newName) ||
           this.newName === 'New Schematic');
     },
   },
@@ -175,6 +196,11 @@ export default {
       this.$store.commit('renameActiveDesign', this.newName);
       this.newName = '',
       this.isRenaming = false;
+    },
+    executeDeleteDesign() {
+      this.$store.commit('deleteActiveDesign');
+      this.deleteName = '',
+      this.isDeleting = false;
     },
   },
 };

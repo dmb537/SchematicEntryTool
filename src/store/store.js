@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import {stringify, parse} from 'flatted';
 
 Vue.use(Vuex);
 
@@ -119,7 +120,7 @@ export default new Vuex.Store({
   },
   actions: {
     addNewComponent(context, component) {
-      const newComponent = JSON.parse(JSON.stringify(component));
+      const newComponent = parse(stringify(component));
       const newComponentID =
           `component-${context.state.activeDesign.nextComponentID}`;
       newComponent.properties.componentID = newComponentID;

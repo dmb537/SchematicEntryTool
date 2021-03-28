@@ -15,7 +15,7 @@
     </div>
     <GeneratedComponent v-for="design in designs"
       :key="design.id"
-      >
+      :design="design" >
     </GeneratedComponent>
   </div>
 </template>

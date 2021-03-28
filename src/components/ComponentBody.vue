@@ -15,18 +15,70 @@ export default {
     component: Object,
   },
   computed: {
+    // List of all designs to check design still exists
+    designs() {
+      return this.$store.state.designs;
+    },
+
+    // If the cached version of the design does not have the same
+    // inputs and outputs as teh current version of the design then
+    // fill the body red so that the user knows it is outdated and
+    // should be re-created
+    fill() {
+      // Check that there is a design to check against
+      if (this.component.hasOwnProperty('sourceDesign') &&
+          this.component.sourceDesign != '') {
+        // Find that design in the list of designs
+        const currentDesign = this.designs.find(
+            (design) => design.id == this.component.sourceDesign.id,
+        );
+
+        if (currentDesign === undefined) {
+          // If the design was not found, highlight it in a strange colour
+          // (should never happen in normal usage)
+          return '#0F0';
+        } else {
+          // Check number of inputs and outputs match
+          if (
+            (this.component.pins.filter((pin) =>
+              pin.direction === 'in').length !=
+            currentDesign.components.filter((component) =>
+              component.properties.componentName === 'INPUT').length) ||
+            (this.component.pins.filter((pin) =>
+              pin.direction === 'out').length !=
+            currentDesign.components.filter((component) =>
+              component.properties.componentName === 'OUTPUT').length)
+          ) {
+            // Quantities do not match
+            return '#88F';
+          } else {
+            // Quantities do match
+            return '#FFF';
+          }
+        }
+      } else {
+        // Component does not have a design to check against
+        // (so is a store component) - do not highlight it
+        return '#FFF';
+      }
+      // Missed a logic option in branches above - return an black as error
+      return '#000';
+    },
+
     // Form the SVG for the body of the component
-    bodySVG: function() {
+    bodySVG() {
       let svgTemplate = '';
 
       // Create body using custom path if present, else just
       // use a rectangle and text of the component name
       if (this.component.customBodyPath !== '') {
         svgTemplate +=
-          `<path d=\"${this.component.customBodyPath}\" fill=\"#fff\"/>`;
+          `<path d=\"${this.component.customBodyPath}\"
+          fill=\"${this.fill}\"/>`;
       } else {
         svgTemplate +=
-          `<rect height=\"150\" width=\"150\" x=\"0\" y=\"0\" fill=\"#fff\"/>
+          `<rect height=\"150\" width=\"150\" x=\"0\" y=\"0\"
+          fill=\"${this.fill}\"/>
           <text xml:space=\"preserve\" text-anchor=\"middle\"
           font-family=\"sans-serif\" font-size=\"15\" y=\"80\" x=\"75\"
           fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"0\"
