@@ -1,85 +1,92 @@
 <template>
   <div id="app">
-    <div id="controls">
-      <button @click="save"> Save </button>
-      <input id="fileSelector" type='file' accept='.dbsim'
+    <div id="menu">
+      <button @click="save"> Save Project </button>
+      <input id="fileSelector" type='file' accept='.dbproj'
           style="display: none"
           @change="load">
-      <button @click="triggerLoad"> Load </button>
+      <button @click="triggerLoad"> Load Project </button>
+      <button @click="saveDesign"> Save Design </button>
+      <input id="fileSelectorDesign" type='file' accept='.dbpage'
+          style="display: none"
+          @change="loadDesign">
+      <button @click="triggerLoadDesign"> Load Design </button>
     </div>
-    <ComponentPane
-      :components="componentLibrary"
-      :designs="designs">
-    </ComponentPane>
-    <div id="viewer">
-      <ul id="tab-selector" class='unselectable-text' @click="rerender">
-        <li v-for="design in designs"
-          :key="design.id"
-          :class='{"selected": (activeDesign == design)}'
-          @click="$store.commit('setActiveDesign', design)">
-          {{ design.name }}
-          <div v-if="activeDesign == design"
-              style="display: flex; flex-direction: row;">
-            <div style="text-align: left; flex-grow: 1;"
-                @click="renameDesign(design)">
-              <small> Rename </small>
+    <div id="content">
+      <ComponentPane
+        :components="componentLibrary"
+        :designs="designs">
+      </ComponentPane>
+      <div id="viewer">
+        <ul id="tab-selector" class='unselectable-text' @click="rerender">
+          <li v-for="design in designs"
+            :key="design.id"
+            :class='{"selected": (activeDesign == design)}'
+            @click="$store.commit('setActiveDesign', design)">
+            {{ design.name }}
+            <div v-if="activeDesign == design"
+                style="display: flex; flex-direction: row;">
+              <div style="text-align: left; flex-grow: 1;"
+                  @click="renameDesign(design)">
+                <small> Rename </small>
+              </div>
+              <div style="text-align: right; flex-grow: 1;"
+                  @click="deleteDesign(design)">
+                <small> Delete </small>
+              </div>
             </div>
-            <div style="text-align: right; flex-grow: 1;"
-                @click="deleteDesign(design)">
-              <small> Delete </small>
+          </li>
+          <li @click="addNewDesign"
+              class="addNew">
+            +
+          </li>
+        </ul>
+        <Schematic v-if="activeDesign"
+          :design="activeDesign"
+          class='schematic-view'>
+        </Schematic>
+      </div>
+      <Popup v-if="isRenaming"
+          @close="isRenaming = false; newName = ''">
+          <template #header>
+            Rename design
+          </template>
+          <template #body>
+            <input v-model="newName"
+              :placeholder="activeDesign.name">
+            <button @click="executeRenameDesign"
+              :disabled="nameIsUsed">
+              Submit
+            </button>
+            <div>
+              <small v-show="nameIsUsed">
+                Name already in use
+              </small>
             </div>
-          </div>
-        </li>
-        <li @click="addNewDesign"
-            class="addNew">
-          +
-        </li>
-      </ul>
-      <Schematic v-if="activeDesign"
-        :design="activeDesign"
-        class='schematic-view'>
-      </Schematic>
+          </template>
+          <template #footer>
+            <div />
+          </template>
+      </Popup>
+      <Popup v-if="isDeleting"
+          @close="isDeleting = false">
+          <template #header>
+            Delete design
+          </template>
+          <template #body>
+            Please enter the name of the design to delete it<br><br>
+            <input v-model="deleteName"
+              :placeholder="activeDesign.name">
+            <button @click="executeDeleteDesign"
+              :disabled="deleteName !== activeDesign.name">
+              Delete
+            </button>
+          </template>
+          <template #footer>
+            <div />
+          </template>
+      </Popup>
     </div>
-    <Popup v-if="isRenaming"
-        @close="isRenaming = false; newName = ''">
-        <template #header>
-          Rename design
-        </template>
-        <template #body>
-          <input v-model="newName"
-            :placeholder="activeDesign.name">
-          <button @click="executeRenameDesign"
-            :disabled="nameIsUsed">
-            Submit
-          </button>
-          <div>
-            <small v-show="nameIsUsed">
-              Name already in use
-            </small>
-          </div>
-        </template>
-        <template #footer>
-          <div />
-        </template>
-    </Popup>
-    <Popup v-if="isDeleting"
-        @close="isDeleting = false">
-        <template #header>
-          Delete design
-        </template>
-        <template #body>
-          Please enter the name of the design to delete it<br><br>
-          <input v-model="deleteName"
-            :placeholder="activeDesign.name">
-          <button @click="executeDeleteDesign"
-            :disabled="deleteName !== activeDesign.name">
-            Delete
-          </button>
-        </template>
-        <template #footer>
-          <div />
-        </template>
-    </Popup>
   </div>
 </template>
 
@@ -151,9 +158,21 @@ export default {
         this.$store.commit('incrementRerender');
       });
     },
+    readFileWithPromise(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ((res) => {
+          resolve(res.target.result);
+        });
+        reader.onerror = ((err) => {
+          reject(err);
+        });
+        reader.readAsText(file);
+      });
+    },
     save() {
       saveAs(new File([stringify(this.$store.state)],
-          `${new Date().toISOString()}.dbsim`,
+          `${new Date().toISOString()}.dbproj`,
           {type: 'application/json'}));
     },
     load() {
@@ -171,20 +190,31 @@ export default {
         );
       }
     },
-    readFileWithPromise(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = ((res) => {
-          resolve(res.target.result);
-        });
-        reader.onerror = ((err) => {
-          reject(err);
-        });
-        reader.readAsText(file);
-      });
-    },
     triggerLoad() {
       document.getElementById('fileSelector').click();
+    },
+    saveDesign() {
+      saveAs(new File([stringify(this.activeDesign)],
+          `${this.activeDesign.name}.dbpage`,
+          {type: 'application/json'}));
+    },
+    loadDesign() {
+      const fileSelectorDesign = document.getElementById('fileSelectorDesign');
+      if (fileSelectorDesign.value != '') {
+        this.readFileWithPromise(fileSelectorDesign.files[0]).then(
+            (result) => {
+              this.$store.commit('loadDesign',
+                  parse(result));
+              this.rerender();
+            },
+            (error) => {
+              console.log('error:' + error);
+            },
+        );
+      }
+    },
+    triggerLoadDesign() {
+      document.getElementById('fileSelectorDesign').click();
     },
     renameDesign() {
       this.isRenaming = true;
@@ -218,15 +248,21 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background-color:#2E4272;
   height: 100vh;
   width: 100vw;
-  overflow: auto;
 }
-#controls {
+#menu {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  margin: 5px 5px 5px 5px;
+}
+#content {
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  flex-grow: 1;
 }
 #component-pane {
   color: #ffffff;
@@ -235,7 +271,6 @@ html, body {
   flex-basis: 150px;
   overflow: auto;
 }
-
 #viewer {
   flex-grow: 1;
   display: flex;

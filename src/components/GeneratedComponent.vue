@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StoreComponent
+    <StoreComponent v-show="component.pins.length != 0"
       :component="component" >
     </StoreComponent>
   </div>

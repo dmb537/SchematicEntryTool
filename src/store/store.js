@@ -105,6 +105,10 @@ export default new Vuex.Store({
       state.designs = newState.designs;
       state.activeDesign = newState.activeDesign;
     },
+    loadDesign(state, newDesign) {
+      state.designs.push(newDesign);
+      state.activeDesign = newDesign;
+    },
     addNetToDesign(state, net) {
       state.activeDesign.nets.push(net);
     },
