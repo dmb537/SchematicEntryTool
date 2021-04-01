@@ -121,7 +121,7 @@ export default {
       // in the component store
       return (this.designs.some((design) => design.name === this.newName) ||
           this.componentLibrary.some((component) =>
-            component.properties.componentName === this.newName) ||
+            component.properties.componentType === this.newName) ||
           this.newName === 'New Schematic');
     },
   },

@@ -8,7 +8,7 @@
         :id="component.properties.componentID"
         stroke="#000">
         <title>
-          {{ component.properties.componentName }}
+          {{ component.properties.componentType }}
         </title>
         <ComponentBody
           :component="component" />

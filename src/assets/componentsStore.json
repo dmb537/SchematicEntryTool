@@ -1,7 +1,7 @@
 [
   {
     "properties": {
-      "componentName": "AND",
+      "componentType": "AND",
       "componentID": "preview-and",
       "x": 0,
       "y": 0,
@@ -41,7 +41,7 @@
   },
   {
     "properties": {
-      "componentName": "OR",
+      "componentType": "OR",
       "componentID": "preview-or",
       "x": 0,
       "y": 0,
@@ -81,7 +81,7 @@
   },
   {
     "properties": {
-      "componentName": "XOR",
+      "componentType": "XOR",
       "componentID": "preview-xor",
       "x": 0,
       "y": 0,
@@ -121,7 +121,7 @@
   },
   {
     "properties": {
-      "componentName": "TEST",
+      "componentType": "TEST",
       "componentID": "preview-test",
       "x": 0,
       "y": 0,
@@ -161,7 +161,7 @@
   },
   {
     "properties": {
-      "componentName": "INPUT",
+      "componentType": "INPUT",
       "componentID": "preview-input",
       "x": 0,
       "y": 0,
@@ -185,7 +185,7 @@
   },
   {
     "properties": {
-      "componentName": "OUTPUT",
+      "componentType": "OUTPUT",
       "componentID": "preview-output",
       "x": 0,
       "y": 0,

@@ -5,7 +5,7 @@
     :stroke="component.properties.strokeColour" >
     <title>
       Name: {{ component.properties.componentID }}
-      Type: {{ component.properties.componentName }}
+      Type: {{ component.properties.componentType }}
     </title>
     <ComponentBody
       :design="design"

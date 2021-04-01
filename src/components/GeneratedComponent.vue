@@ -21,7 +21,7 @@ export default {
     component: function() {
       const component = {
         'properties': {
-          'componentName': '',
+          'componentType': '',
           'componentID': '',
           'x': 0,
           'y': 0,
@@ -36,8 +36,39 @@ export default {
         'customBodyPath': '',
         'sourceDesign': this.design,
       };
-      component.properties.componentName = this.design.name;
+      component.properties.componentType = this.design.name;
       component.properties.componentID = `preview-${this.design.name}`;
+
+      // Get all pins
+      const pinsIn = this.design.components.filter((component) =>
+        component.properties.componentType === 'INPUT');
+      const pinsOut = this.design.components.filter((component) =>
+        component.properties.componentType === 'OUTPUT');
+
+      pinsIn.forEach((pin, index) => {
+        const newPin = {
+          'name': pin.properties.componentID,
+          'x': 0,
+          'y': 15 + (30 * index),
+          'direction': 'in',
+          'connectedNet': 'open',
+          'componentID': component.properties.componentID,
+        };
+        component.pins.push(newPin);
+      });
+
+      pinsOut.forEach((pin, index) => {
+        const newPin = {
+          'name': pin.properties.componentID,
+          'x': 150,
+          'y': 15 + (30 * index),
+          'direction': 'out',
+          'connectedNet': 'open',
+          'componentID': component.properties.componentID,
+        };
+        component.pins.push(newPin);
+      });
+
       return component;
     },
   },

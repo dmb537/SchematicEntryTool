@@ -117,9 +117,20 @@ export default new Vuex.Store({
     renameActiveDesign(state, newName) {
       state.activeDesign.name = newName;
     },
+    deleteActiveDesign(state) {
+      Vue.delete(state.designs, state.designs.indexOf(state.activeDesign));
+      if (state.designs.length == 0) {
+        state.activeDesign = null;
+      } else {
+        state.activeDesign = state.designs[0];
+      }
+    },
   },
   actions: {
     addNewComponent(context, component) {
+      if (context.state.activeDesign == null) {
+        return;
+      }
       const newComponent = parse(stringify(component));
       const newComponentID =
           `component-${context.state.activeDesign.nextComponentID}`;
