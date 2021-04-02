@@ -69,7 +69,7 @@
           </template>
       </Popup>
       <Popup v-if="isDeleting"
-          @close="isDeleting = false">
+          @close="isDeleting = false; deleteName = ''">
           <template #header>
             Delete design
           </template>
@@ -182,10 +182,12 @@ export default {
             (result) => {
               this.$store.commit('overwriteState',
                   parse(result));
+              fileSelector.value = '';
               this.rerender();
             },
             (error) => {
               console.log('error:' + error);
+              fileSelector.value = '';
             },
         );
       }
@@ -205,10 +207,12 @@ export default {
             (result) => {
               this.$store.commit('loadDesign',
                   parse(result));
+              fileSelectorDesign.value = '';
               this.rerender();
             },
             (error) => {
               console.log('error:' + error);
+              fileSelectorDesign.value = '';
             },
         );
       }

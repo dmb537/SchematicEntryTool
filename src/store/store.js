@@ -106,6 +106,10 @@ export default new Vuex.Store({
       state.activeDesign = newState.activeDesign;
     },
     loadDesign(state, newDesign) {
+      //
+      while (state.designs.some((design) => design.id == newDesign.id)) {
+        newDesign.id -= 1;
+      }
       state.designs.push(newDesign);
       state.activeDesign = newDesign;
     },
