@@ -66,7 +66,7 @@ export default {
             ${end.x},${start.y + dy/2}
             ${end.x},${end.y}`;
       }
-      svg += '" />';
+      svg += `" /><title>${this.net.netName}</title>`;
       return svg;
     },
   },

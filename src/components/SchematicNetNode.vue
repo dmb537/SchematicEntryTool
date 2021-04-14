@@ -35,7 +35,8 @@ export default {
           cy=${this.node.properties.y + this.node.properties.dragY}
           r=4
           stroke=${this.node.properties.strokeColour}
-          fill=${this.node.properties.strokeColour} />`;
+          fill=${this.node.properties.strokeColour}/>` +
+          `<title>${this.node.properties.netName}</title>`;
 
       return svg;
     },

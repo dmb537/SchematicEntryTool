@@ -3,10 +3,12 @@
     "properties": {
       "componentType": "AND",
       "componentID": "preview-and",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
@@ -43,10 +45,12 @@
     "properties": {
       "componentType": "OR",
       "componentID": "preview-or",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
@@ -83,10 +87,12 @@
     "properties": {
       "componentType": "XOR",
       "componentID": "preview-xor",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
@@ -123,10 +129,12 @@
     "properties": {
       "componentType": "TEST",
       "componentID": "preview-test",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
@@ -163,10 +171,12 @@
     "properties": {
       "componentType": "INPUT",
       "componentID": "preview-input",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"
@@ -187,10 +197,12 @@
     "properties": {
       "componentType": "OUTPUT",
       "componentID": "preview-output",
+      "displayName": "",
       "x": 0,
       "y": 0,
       "dragX": 0,
       "dragY": 0,
+      "rotation": 0,
       "strokeColour": "#000",
       "availableInputFill": "#fff",
       "availableOutputFill": "#fff"

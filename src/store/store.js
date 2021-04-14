@@ -133,6 +133,23 @@ export default new Vuex.Store({
         state.activeDesign = state.designs[0];
       }
     },
+    rotateSelection(state) {
+      state.activeDesign.selectedComponents.forEach((component) => {
+        component.properties.rotation =
+            (component.properties.rotation + 90) % 360;
+      });
+    },
+    renameComponent(state, newName) {
+      state.activeDesign.selectedComponents[0].properties.displayName = newName;
+    },
+    renameNet(state, newName) {
+      const targetNet = state.activeDesign.nets.find((net) => {
+        return (net.netID ===
+          state.activeDesign.selectedComponents[0].properties.netID);
+      });
+      targetNet.netName = newName;
+      targetNet.nodes.forEach((node) => node.properties.netName = newName);
+    },
   },
   actions: {
     addNewComponent(context, component) {
@@ -156,6 +173,7 @@ export default new Vuex.Store({
     startGhostWire(context, payload) {
       const newNet = {
         netID: 'net-' + context.state.activeDesign.nextNetID,
+        netName: 'net-' + context.state.activeDesign.nextNetID,
         pins: [payload.pin],
         nodes: [],
         segments: [],
@@ -183,6 +201,8 @@ export default new Vuex.Store({
           y: Math.round((event.offsetY-2.5)/5)*5,
           dragX: 0,
           dragY: 0,
+          netID: context.state.activeDesign.ghostNet.netID,
+          netName: context.state.activeDesign.ghostNet.netID,
           strokeColour: '#000',
         },
       };

@@ -2,9 +2,13 @@
   <g
     :id="component.properties.componentID"
     :transform="transform"
-    :stroke="component.properties.strokeColour" >
+    :stroke="component.properties.strokeColour">
     <title>
-      Name: {{ component.properties.componentID }}
+      Name: {{
+          (this.component.properties.displayName === '' ?
+          this.component.properties.componentID :
+          this.component.properties.displayName)
+      }}
       Type: {{ component.properties.componentType }}
     </title>
     <ComponentBody
@@ -34,11 +38,22 @@ export default {
   },
   computed: {
     transform: function() {
+      const element = document.getElementById(
+          this.component.properties.componentID);
+      let area = null;
+      if (element != null) {
+        area = element.getBBox();
+      } else {
+        area = {width: 0, height: 0};
+      }
+
       const transform =
         `translate(${this.component.properties.x},` +
         `${this.component.properties.y})` +
         `translate(${this.component.properties.dragX},` +
-        `${this.component.properties.dragY})`;
+        `${this.component.properties.dragY})` +
+        `rotate(${this.component.properties.rotation},` +
+        `${area.width / 2}, ${area.height / 2})`;
       return transform;
     },
   },

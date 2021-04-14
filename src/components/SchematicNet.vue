@@ -4,7 +4,8 @@
       :key="net.netID + ':segment-' + index + ':'
           + segment.start.type + '-' + segment.end.type"
       :design="design"
-      :segment="segment" />
+      :segment="segment"
+      :net="net"/>
     <SchematicNetNode v-for="(node, index) in net.nodes"
       :key="net.netID + ':node-' + index + ':'
           + node.properties.x + ',' +  node.properties.y"

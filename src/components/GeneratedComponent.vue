@@ -23,10 +23,12 @@ export default {
         'properties': {
           'componentType': '',
           'componentID': '',
+          'displayName': '',
           'x': 0,
           'y': 0,
           'dragX': 0,
           'dragY': 0,
+          'rotation': 0,
           'strokeColour': '#000',
           'availableInputFill': '#fff',
           'availableOutputFill': '#fff',
@@ -47,7 +49,9 @@ export default {
 
       pinsIn.forEach((pin, index) => {
         const newPin = {
-          'name': pin.properties.componentID,
+          'name': (pin.properties.displayName === '' ?
+              pin.properties.componentID :
+              pin.properties.displayName),
           'x': 0,
           'y': 15 + (30 * index),
           'direction': 'in',
@@ -59,7 +63,9 @@ export default {
 
       pinsOut.forEach((pin, index) => {
         const newPin = {
-          'name': pin.properties.componentID,
+          'name': (pin.properties.displayName === '' ?
+              pin.properties.componentID :
+              pin.properties.displayName),
           'x': 150,
           'y': 15 + (30 * index),
           'direction': 'out',

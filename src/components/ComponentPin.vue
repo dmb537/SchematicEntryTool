@@ -17,19 +17,23 @@ export default {
     pinSVG: function() {
       let pinSVG = '';
       const properties = this.component.properties;
+      const componentName =
+          (this.component.properties.displayName === '' ?
+          this.component.properties.componentID :
+          this.component.properties.displayName);
 
       pinSVG += `<rect id=\"${this.pin.componentID}:${this.pin.name}\"
           height=\"20\" width=\"20\" x=\"${this.pin.x - 10}\"
           y=\"${this.pin.y - 10}\"`;
 
       if (this.pin.connectedNet == 'open') {
-        pinSVG += `fill=\"${properties.availableInputFill}\">
-          <title>${this.pin.componentID}:${this.pin.name}</title>`;
+        pinSVG += `fill=\"${properties.availableInputFill}\">` +
+            `<title>${componentName}:${this.pin.name}</title>`;
       } else {
         pinSVG +=
           `fill=\"#000\">
-          <title>${properties.componentID}:${this.pin.name}
-          Net: ${this.pin.connectedNet.netID}</title>`;
+          <title>${componentName}:${this.pin.name} -> ` +
+          `${this.pin.connectedNet.netName}</title>`;
       }
       pinSVG += '</rect>';
       return pinSVG;

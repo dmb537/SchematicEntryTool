@@ -11,6 +11,8 @@
           style="display: none"
           @change="loadDesign">
       <button @click="triggerLoadDesign"> Load Design </button>
+      <button @click="rotateSelection"> Rotate Selection </button>
+      <button @click="renameSelection"> Rename Selection </button>
     </div>
     <div id="content">
       <ComponentPane
@@ -55,12 +57,15 @@
             <input v-model="newName"
               :placeholder="activeDesign.name">
             <button @click="executeRenameDesign"
-              :disabled="nameIsUsed">
+              :disabled="nameIsUsed || nameHasSpaces">
               Submit
             </button>
             <div>
               <small v-show="nameIsUsed">
                 Name already in use
+              </small>
+              <small v-show="nameHasSpaces">
+                Name should not have spaces
               </small>
             </div>
           </template>
@@ -81,6 +86,58 @@
               :disabled="deleteName !== activeDesign.name">
               Delete
             </button>
+          </template>
+          <template #footer>
+            <div />
+          </template>
+      </Popup>
+      <Popup v-if="isRenamingComponent"
+          @close="isRenamingComponent = false; newName = ''">
+          <template #header>
+            Rename component
+          </template>
+          <template #body>
+            <input v-model="newName"
+              :placeholder=
+                  "activeDesign.selectedComponents[0].properties.displayName">
+            <button @click="executeRenameComponent"
+              :disabled="nameIsUsedInDesign || nameHasSpaces">
+              Submit
+            </button>
+            <div>
+              <small v-show="nameIsUsedInDesign">
+                Name already in use
+              </small>
+              <small v-show="nameHasSpaces">
+                Name should not have spaces
+              </small>
+            </div>
+          </template>
+          <template #footer>
+            <div />
+          </template>
+      </Popup>
+      <Popup v-if="isRenamingNet"
+          @close="isRenamingNet = false; newName = ''">
+          <template #header>
+            Rename net
+          </template>
+          <template #body>
+            <input v-model="newName"
+              :placeholder=
+                  "activeDesign.selectedComponents[0].properties.netID">
+            <button @click="executeRenameNet"
+              :disabled="nameIsUsedInDesign || nameHasSpaces">
+              Submit
+            </button>
+            <div>
+              <small v-show="nameIsUsedInDesign">
+                Name already in use
+              </small>
+              <small v-show="nameHasSpaces">
+                Name should not have spaces
+              </small>
+            </div>
           </template>
           <template #footer>
             <div />
@@ -111,6 +168,8 @@ export default {
       componentLibrary: componentsStore,
       isRenaming: false,
       isDeleting: false,
+      isRenamingComponent: false,
+      isRenamingNet: false,
       newName: '',
       deleteName: '',
     };
@@ -122,6 +181,9 @@ export default {
     activeDesign() {
       return this.$store.state.activeDesign;
     },
+    nameHasSpaces() {
+      return (this.newName.indexOf(' ') !== -1);
+    },
     nameIsUsed() {
       // Name is invalid if it is used by an existing design,
       // is the default new schematic name, or is used as a name
@@ -130,6 +192,13 @@ export default {
           this.componentLibrary.some((component) =>
             component.properties.componentType === this.newName) ||
           this.newName === 'New Schematic');
+    },
+    nameIsUsedInDesign() {
+      // Name is invalid for a component or net if it is already used for a
+      // component or net in the current design
+      return this.activeDesign.components.some(
+          (component) => component.properties.displayName === this.newName,
+      );
     },
   },
   mounted() {
@@ -235,6 +304,32 @@ export default {
       this.$store.commit('deleteActiveDesign');
       this.deleteName = '',
       this.isDeleting = false;
+    },
+    rotateSelection() {
+      this.$store.commit('rotateSelection');
+      this.rerender();
+    },
+    renameSelection() {
+      // If multiple or no things are selected, deselect all and return
+      if (this.activeDesign.selectedComponents.length !== 1) {
+        this.$store.commit('deselectAll');
+      } else {
+        if (this.activeDesign.selectedComponents[0].hasOwnProperty('pins')) {
+          this.isRenamingComponent = true;
+        } else {
+          this.isRenamingNet = true;
+        }
+      }
+    },
+    executeRenameComponent() {
+      this.$store.commit('renameComponent', this.newName);
+      this.newName = '',
+      this.isRenamingComponent = false;
+    },
+    executeRenameNet() {
+      this.$store.commit('renameNet', this.newName);
+      this.newName = '',
+      this.isRenamingNet = false;
     },
   },
 };
