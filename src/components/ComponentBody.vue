@@ -59,7 +59,11 @@ export default {
         // Check names match
         if (!this.component.pins.every((pin) => {
           return currentDesign.components.some((component) => {
-            return component.properties.displayName === pin.name;
+            if (component.properties.displayName === '') {
+              return component.properties.componentID === pin.name;
+            } else {
+              return component.properties.displayName === pin.name;
+            }
           });
         })) {
           return {fill: '#F88', error: 'Names of pins have changed'};

@@ -1,5 +1,6 @@
 <template>
-  <g v-html="computedSVG" />
+  <g v-html="computedSVG"
+    @dblclick="debug('Segment double clicked')"/>
 </template>
 
 
@@ -54,6 +55,7 @@ export default {
 
       dx = end.x - start.x;
       dy = end.y - start.y;
+      // Rendering
       svg += '<polyline fill="none" stroke="black" points="';
       if (Math.abs(dx) > Math.abs(dy)) {
         svg += `${start.x},${start.y}
@@ -66,7 +68,26 @@ export default {
             ${end.x},${start.y + dy/2}
             ${end.x},${end.y}`;
       }
-      svg += `" /><title>${this.net.netName}</title>`;
+      svg += `" />`;
+
+      // Generous hit-box for selecting
+      svg += '<polyline fill="none" stroke="green" stroke-width="14"' +
+             'stroke-opacity="0.1" points="';
+      if (Math.abs(dx) > Math.abs(dy)) {
+        svg += `${start.x},${start.y}
+            ${start.x + dx/2},${start.y}
+            ${start.x + dx/2},${end.y}
+            ${end.x},${end.y}`;
+      } else {
+        svg += `${start.x},${start.y}
+            ${start.x},${start.y + dy/2}
+            ${end.x},${start.y + dy/2}
+            ${end.x},${end.y}`;
+      }
+      svg += `" />`;
+
+      // Add title on hover
+      svg += `<title>${this.net.netName}</title>`;
       return svg;
     },
   },
@@ -87,6 +108,9 @@ export default {
         x: (matrix.a * x) + (matrix.c * y) + matrix.e - offset.left,
         y: (matrix.b * x) + (matrix.d * y) + matrix.f - offset.top,
       };
+    },
+    debug(message) {
+      console.log(message);
     },
   },
 };
