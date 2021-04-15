@@ -37,13 +37,6 @@ export default new Vuex.Store({
       toSelect.properties.strokeColour = '#00F';
       state.activeDesign.selectedComponents.push(toSelect);
     },
-    deleteSelection(state) {
-      state.activeDesign.selectedComponents.forEach((toDelete) => {
-        Vue.delete(state.activeDesign.components,
-            state.activeDesign.components.indexOf(toDelete));
-      });
-      state.activeDesign.selectedComponents = [];
-    },
     setSignificantDrag(state, isSignificantDrag) {
       state.activeDesign.isSignificantDrag = isSignificantDrag;
     },
@@ -83,6 +76,9 @@ export default new Vuex.Store({
     setConnectedNet(state, payload) { // This breaks if state is not passed
       payload.pin.connectedNet = payload.net;
     },
+    addPinToNet(state, payload) {
+      payload.net.pins.push(payload.pin);
+    },
     setGhostWire(state, ghostWire) {
       state.activeDesign.ghostWire = ghostWire;
     },
@@ -106,7 +102,6 @@ export default new Vuex.Store({
       state.activeDesign = newState.activeDesign;
     },
     loadDesign(state, newDesign) {
-      //
       while (state.designs.some((design) => design.id == newDesign.id)) {
         newDesign.id -= 1;
       }
@@ -149,6 +144,13 @@ export default new Vuex.Store({
       });
       targetNet.netName = newName;
       targetNet.nodes.forEach((node) => node.properties.netName = newName);
+    },
+    deleteNet(state, net) {
+      Vue.delete(state.activeDesign.nets, state.activeDesign.nets.indexOf(net));
+    },
+    deleteComponent(state, component) {
+      Vue.delete(state.activeDesign.components,
+          state.activeDesign.components.indexOf(component));
     },
   },
   actions: {
@@ -243,6 +245,9 @@ export default new Vuex.Store({
       context.commit('setGhostNet', null);
     },
     endGhostNetAtPin(context, pin) {
+      // Add the pin to the list of pins belonging to the net
+      context.commit('addPinToNet',
+          {pin: pin, net: context.state.activeDesign.ghostNet});
       // Make the pin know it is connected
       context.commit('setConnectedNet',
           {pin: pin, net: context.state.activeDesign.ghostNet});
@@ -259,6 +264,49 @@ export default new Vuex.Store({
       // Clear the ghost wire and net
       context.commit('setGhostWire', null);
       context.commit('setGhostNet', null);
+    },
+    deleteSelection(context) {
+      // Split list into nodes and components
+      const componentsToDelete =
+          context.state.activeDesign.selectedComponents.filter((selected) => {
+            return selected.hasOwnProperty('pins');
+          });
+      const nodesToDelete =
+          context.state.activeDesign.selectedComponents.filter((selected) => {
+            return !selected.hasOwnProperty('pins');
+          });
+      const netsToDelete = [];
+      // Components: For each pin, delete the net connected to it
+      componentsToDelete.forEach((component) => {
+        component.pins.forEach((pin) => {
+          if (pin.connectedNet !== 'open' &&
+              netsToDelete.indexOf(pin.connectedNet) == -1) {
+            netsToDelete.push(pin.connectedNet);
+          }
+        });
+      });
+      // For each node, delete the parent net
+      nodesToDelete.forEach((node) => {
+        const parentNet = context.state.activeDesign.nets.find((net) => {
+          return (net.netID === node.properties.netID);
+        });
+        console.log(parentNet);
+        if (netsToDelete.indexOf(parentNet) == -1) {
+          netsToDelete.push(parentNet);
+        };
+      });
+      // Disconnect all pins connected to the nets to be deleted
+      netsToDelete.forEach((net) => {
+        net.pins.forEach((pin) => {
+          context.commit('setConnectedNet', {pin: pin, net: 'open'});
+        });
+      });
+      // Delete all nets queued to be deleted
+      netsToDelete.forEach((net) => context.commit('deleteNet', net));
+      // Delete all components queued for deletion
+      componentsToDelete.forEach((component) => {
+        context.commit('deleteComponent', component);
+      });
     },
   },
 });

@@ -74,7 +74,7 @@ export default {
       this.$store.commit('endDrag');
     },
     deleteSelection(event) {
-      this.$store.commit('deleteSelection');
+      this.$store.dispatch('deleteSelection');
     },
     cancelActions() {
       if (this.design.selectedComponents.length != 0) {
