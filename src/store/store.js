@@ -153,7 +153,6 @@ export default new Vuex.Store({
           state.activeDesign.components.indexOf(component));
     },
     deleteSegment(state, segment) {
-      console.log(segment);
       Vue.delete(segment.parentNet.segments,
           segment.parentNet.segments.indexOf(segment));
     },

@@ -113,9 +113,6 @@ export default {
       this.$store.dispatch('addNodeToSegment',
           {event: event, segment: this.segment});
     },
-    debug(message) {
-      console.log(message);
-    },
   },
 };
 </script>
