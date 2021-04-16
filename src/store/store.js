@@ -152,6 +152,11 @@ export default new Vuex.Store({
       Vue.delete(state.activeDesign.components,
           state.activeDesign.components.indexOf(component));
     },
+    deleteSegment(state, segment) {
+      console.log(segment);
+      Vue.delete(segment.parentNet.segments,
+          segment.parentNet.segments.indexOf(segment));
+    },
   },
   actions: {
     addNewComponent(context, component) {
@@ -192,6 +197,7 @@ export default new Vuex.Store({
             x: Math.round((payload.event.offsetX-2.5)/5)*5,
             y: Math.round((payload.event.offsetY-2.5)/5)*5,
           },
+        parentNet: newNet,
       };
       context.commit('setGhostWire', newWireSegment);
     },
@@ -215,6 +221,7 @@ export default new Vuex.Store({
         start: context.state.activeDesign.ghostWire.start,
         end:
           {type: 'node', node: newNode},
+        parentNet: context.state.activeDesign.ghostNet,
       };
       context.commit('addSegmentToNet',
           {segment: newSegment, net: context.state.activeDesign.ghostNet});
@@ -227,6 +234,7 @@ export default new Vuex.Store({
             x: Math.round((event.offsetX-2.5)/5)*5,
             y: Math.round((event.offsetY-2.5)/5)*5,
           },
+        parentNet: context.state.activeDesign.ghostNet,
       };
       context.commit('setGhostWire', newGhostWire);
     },
@@ -256,6 +264,7 @@ export default new Vuex.Store({
         start: context.state.activeDesign.ghostWire.start,
         end:
           {type: 'pin', pin: pin},
+        parentNet: context.state.activeDesign.ghostNet,
       };
       context.commit('addSegmentToNet',
           {segment: newSegment, net: context.state.activeDesign.ghostNet});
@@ -290,7 +299,6 @@ export default new Vuex.Store({
         const parentNet = context.state.activeDesign.nets.find((net) => {
           return (net.netID === node.properties.netID);
         });
-        console.log(parentNet);
         if (netsToDelete.indexOf(parentNet) == -1) {
           netsToDelete.push(parentNet);
         };
@@ -307,6 +315,45 @@ export default new Vuex.Store({
       componentsToDelete.forEach((component) => {
         context.commit('deleteComponent', component);
       });
+    },
+    addNodeToSegment(context, payload) {
+      // Get the two current ends of the segment
+      const oldStart = payload.segment.start;
+      const oldEnd = payload.segment.end;
+      // Remove the old segment from the net
+      context.commit('deleteSegment', payload.segment);
+      // Create a new node at the mouse location
+      const newNode = {
+        properties: {
+          x: Math.round((payload.event.offsetX-2.5)/5)*5,
+          y: Math.round((payload.event.offsetY-2.5)/5)*5,
+          dragX: 0,
+          dragY: 0,
+          netID: payload.segment.parentNet.netID,
+          netName: payload.segment.parentNet.netName,
+          strokeColour: '#000',
+        },
+      };
+      // Add that node to the net
+      context.commit('addNodeToNet',
+          {node: newNode, net: payload.segment.parentNet});
+      // Make a new segment from each previous ends to the new node
+      const newSegmentOne = {
+        start: oldStart,
+        end:
+          {type: 'node', node: newNode},
+        parentNet: payload.segment.parentNet,
+      };
+      const newSegmentTwo = {
+        start: {type: 'node', node: newNode},
+        end: oldEnd,
+        parentNet: payload.segment.parentNet,
+      };
+      // Add the new segments to the net
+      context.commit('addSegmentToNet',
+          {segment: newSegmentOne, net: payload.segment.parentNet});
+      context.commit('addSegmentToNet',
+          {segment: newSegmentTwo, net: payload.segment.parentNet});
     },
   },
 });

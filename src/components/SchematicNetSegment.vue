@@ -1,6 +1,6 @@
 <template>
   <g v-html="computedSVG"
-    @dblclick="debug('Segment double clicked')"/>
+    @dblclick="createNewNode"/>
 </template>
 
 
@@ -108,6 +108,10 @@ export default {
         x: (matrix.a * x) + (matrix.c * y) + matrix.e - offset.left,
         y: (matrix.b * x) + (matrix.d * y) + matrix.f - offset.top,
       };
+    },
+    createNewNode(event) {
+      this.$store.dispatch('addNodeToSegment',
+          {event: event, segment: this.segment});
     },
     debug(message) {
       console.log(message);
