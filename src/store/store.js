@@ -273,6 +273,148 @@ export default new Vuex.Store({
       context.commit('setGhostWire', null);
       context.commit('setGhostNet', null);
     },
+    addNodeToSegment(context, payload) {
+      // Get the two current ends of the segment
+      const oldStart = payload.segment.start;
+      const oldEnd = payload.segment.end;
+      // Remove the old segment from the net
+      context.commit('deleteSegment', payload.segment);
+      // Create a new node at the mouse location
+      const newNode = {
+        properties: {
+          x: Math.round((payload.event.offsetX-2.5)/5)*5,
+          y: Math.round((payload.event.offsetY-2.5)/5)*5,
+          dragX: 0,
+          dragY: 0,
+          netID: payload.segment.parentNet.netID,
+          netName: payload.segment.parentNet.netName,
+          strokeColour: '#000',
+        },
+      };
+      // Add that node to the net
+      context.commit('addNodeToNet',
+          {node: newNode, net: payload.segment.parentNet});
+      // Make a new segment from each previous ends to the new node
+      const newSegmentOne = {
+        start: oldStart,
+        end:
+          {type: 'node', node: newNode},
+        parentNet: payload.segment.parentNet,
+      };
+      const newSegmentTwo = {
+        start: {type: 'node', node: newNode},
+        end: oldEnd,
+        parentNet: payload.segment.parentNet,
+      };
+      // Add the new segments to the net
+      context.commit('addSegmentToNet',
+          {segment: newSegmentOne, net: payload.segment.parentNet});
+      context.commit('addSegmentToNet',
+          {segment: newSegmentTwo, net: payload.segment.parentNet});
+    },
+    endGhostNetAtSegment(context, payload) {
+      // First create a new node in the target net (reused code from above,
+      // can't extract out as function as need intermediate products)
+
+      // Get the two current ends of the segment
+      const oldStart = payload.segment.start;
+      const oldEnd = payload.segment.end;
+      // Remove the old segment from the net
+      context.commit('deleteSegment', payload.segment);
+      // Create a new node at the mouse location
+      const newNode = {
+        properties: {
+          x: Math.round((payload.event.offsetX-2.5)/5)*5,
+          y: Math.round((payload.event.offsetY-2.5)/5)*5,
+          dragX: 0,
+          dragY: 0,
+          netID: payload.segment.parentNet.netID,
+          netName: payload.segment.parentNet.netName,
+          strokeColour: '#000',
+        },
+      };
+      // Add that node to the net
+      context.commit('addNodeToNet',
+          {node: newNode, net: payload.segment.parentNet});
+      // Make a new segment from each previous ends to the new node
+      const newSegmentOne = {
+        start: oldStart,
+        end:
+          {type: 'node', node: newNode},
+        parentNet: payload.segment.parentNet,
+      };
+      const newSegmentTwo = {
+        start: {type: 'node', node: newNode},
+        end: oldEnd,
+        parentNet: payload.segment.parentNet,
+      };
+      // Add the new segments to the net
+      context.commit('addSegmentToNet',
+          {segment: newSegmentOne, net: payload.segment.parentNet});
+      context.commit('addSegmentToNet',
+          {segment: newSegmentTwo, net: payload.segment.parentNet});
+
+      // Push all parts of the ghost net into the existing net, taking
+      // the existing net's name and id
+      context.state.activeDesign.ghostNet.nodes.forEach((node) => {
+        node.properties.netID = payload.segment.parentNet.netID;
+        node.properties.netName = payload.segment.parentNet.netName;
+        context.commit('addNodeToNet',
+            {node: node, net: payload.segment.parentNet});
+      });
+      context.state.activeDesign.ghostNet.pins.forEach((pin) => {
+        pin.connectedNet = payload.segment.parentNet;
+        context.commit('addPinToNet',
+            {pin: pin, net: payload.segment.parentNet});
+      });
+      context.state.activeDesign.ghostNet.segments.forEach((segment) => {
+        segment.parentNet = payload.segment.parentNet;
+        context.commit('addSegmentToNet',
+            {segment: segment, net: payload.segment.parentNet});
+      });
+      // Create the segment linking the old net to the new one
+      const newSegment = {
+        start: context.state.activeDesign.ghostWire.start,
+        end: {type: 'node', node: newNode},
+        parentNet: payload.segment.parentNet,
+      };
+      context.commit('addSegmentToNet',
+          {segment: newSegment, net: payload.segment.parentNet});
+      // Discard the ghost net and wire
+      context.commit('setGhostWire', null);
+      context.commit('setGhostNet', null);
+    },
+    endGhostNetAtNode(context, payload) {
+      // Push all parts of the ghost net into the existing net, taking
+      // the existing net's name and id (as above)
+      context.state.activeDesign.ghostNet.nodes.forEach((node) => {
+        node.properties.netID = payload.net.netID;
+        node.properties.netName = payload.net.netName;
+        context.commit('addNodeToNet',
+            {node: node, net: payload.net});
+      });
+      context.state.activeDesign.ghostNet.pins.forEach((pin) => {
+        pin.connectedNet = payload.net;
+        context.commit('addPinToNet',
+            {pin: pin, net: payload.net});
+      });
+      context.state.activeDesign.ghostNet.segments.forEach((segment) => {
+        segment.parentNet = payload.net;
+        context.commit('addSegmentToNet',
+            {segment: segment, net: payload.net});
+      });
+      // Create the segment linking the old net to the new one
+      const newSegment = {
+        start: context.state.activeDesign.ghostWire.start,
+        end: {type: 'node', node: payload.node},
+        parentNet: payload.net,
+      };
+      context.commit('addSegmentToNet',
+          {segment: newSegment, net: payload.net});
+      // Discard the ghost net and wire
+      context.commit('setGhostWire', null);
+      context.commit('setGhostNet', null);
+    },
     deleteSelection(context) {
       // Split list into nodes and components
       const componentsToDelete =
@@ -314,45 +456,6 @@ export default new Vuex.Store({
       componentsToDelete.forEach((component) => {
         context.commit('deleteComponent', component);
       });
-    },
-    addNodeToSegment(context, payload) {
-      // Get the two current ends of the segment
-      const oldStart = payload.segment.start;
-      const oldEnd = payload.segment.end;
-      // Remove the old segment from the net
-      context.commit('deleteSegment', payload.segment);
-      // Create a new node at the mouse location
-      const newNode = {
-        properties: {
-          x: Math.round((payload.event.offsetX-2.5)/5)*5,
-          y: Math.round((payload.event.offsetY-2.5)/5)*5,
-          dragX: 0,
-          dragY: 0,
-          netID: payload.segment.parentNet.netID,
-          netName: payload.segment.parentNet.netName,
-          strokeColour: '#000',
-        },
-      };
-      // Add that node to the net
-      context.commit('addNodeToNet',
-          {node: newNode, net: payload.segment.parentNet});
-      // Make a new segment from each previous ends to the new node
-      const newSegmentOne = {
-        start: oldStart,
-        end:
-          {type: 'node', node: newNode},
-        parentNet: payload.segment.parentNet,
-      };
-      const newSegmentTwo = {
-        start: {type: 'node', node: newNode},
-        end: oldEnd,
-        parentNet: payload.segment.parentNet,
-      };
-      // Add the new segments to the net
-      context.commit('addSegmentToNet',
-          {segment: newSegmentOne, net: payload.segment.parentNet});
-      context.commit('addSegmentToNet',
-          {segment: newSegmentTwo, net: payload.segment.parentNet});
     },
   },
 });

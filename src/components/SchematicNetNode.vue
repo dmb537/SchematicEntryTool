@@ -15,6 +15,7 @@ export default {
   },
   props: {
     design: Object,
+    net: Object,
     node: Object,
   },
   computed: {
@@ -82,10 +83,17 @@ export default {
       }
     },
     nodeMouseUp(event) {
-      if (this.design.isSignificantDrag) {
-        this.$store.commit('applyDrag', event);
+      // If creating a net, end the net at the node
+      // Otherwise, handle stopping dragging
+      if (this.design.ghostWire != null) {
+        this.$store.dispatch('endGhostNetAtNode',
+            {event: event, node: this.node, net: this.net});
+      } else {
+        if (this.design.isSignificantDrag) {
+          this.$store.commit('applyDrag', event);
+        }
+        this.$store.commit('endDrag');
       }
-      this.$store.commit('endDrag');
     },
     nodeMouseMove(event) {
       if (this.design.isDragging) {

@@ -10,7 +10,8 @@
       :key="net.netID + ':node-' + index + ':'
           + node.properties.x + ',' +  node.properties.y"
       :design="design"
-      :node="node" />
+      :node="node"
+      :net="net" />
   </g>
 </template>
 

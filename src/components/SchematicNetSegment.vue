@@ -1,5 +1,6 @@
 <template>
   <g v-html="computedSVG"
+    @click="endGhostNetAtSegment"
     @dblclick="createNewNode"/>
 </template>
 
@@ -72,7 +73,7 @@ export default {
 
       // Generous hit-box for selecting
       svg += '<polyline fill="none" stroke="green" stroke-width="14"' +
-             'stroke-opacity="0.1" points="';
+             'stroke-opacity="0" points="';
       if (Math.abs(dx) > Math.abs(dy)) {
         svg += `${start.x},${start.y}
             ${start.x + dx/2},${start.y}
@@ -108,6 +109,12 @@ export default {
         x: (matrix.a * x) + (matrix.c * y) + matrix.e - offset.left,
         y: (matrix.b * x) + (matrix.d * y) + matrix.f - offset.top,
       };
+    },
+    endGhostNetAtSegment(event) {
+      if (this.design.ghostWire != null) {
+        this.$store.dispatch('endGhostNetAtSegment',
+            {event: event, segment: this.segment});
+      }
     },
     createNewNode(event) {
       this.$store.dispatch('addNodeToSegment',
