@@ -86,7 +86,7 @@ export default {
       // If creating a net, end the net at the node
       // Otherwise, handle stopping dragging
       if (this.design.ghostWire != null &&
-        this.ghostWire.parentNet != this.net) {
+        this.design.ghostWire.parentNet != this.net) {
         this.$store.dispatch('endGhostNetAtNode',
             {event: event, node: this.node, net: this.net});
       } else {

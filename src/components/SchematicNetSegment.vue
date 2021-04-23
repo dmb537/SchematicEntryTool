@@ -113,7 +113,7 @@ export default {
     endGhostNetAtSegment(event) {
       // Prevent terminating a new net at itself
       if (this.design.ghostWire != null &&
-        this.ghostWire.parentNet != this.net) {
+        this.design.ghostWire.parentNet != this.net) {
         this.$store.dispatch('endGhostNetAtSegment',
             {event: event, segment: this.segment});
       }
