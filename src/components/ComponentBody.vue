@@ -95,8 +95,9 @@ export default {
       } else {
         svgTemplate +=
           `<rect height=\"150\" width=\"150\" x=\"0\" y=\"0\"
-          fill=\"${this.fillAndError.fill}\"/>
-          <text xml:space=\"preserve\" text-anchor=\"middle\"
+          fill=\"${this.fillAndError.fill}\"/>`;
+      }
+      svgTemplate += `<text xml:space=\"preserve\" text-anchor=\"middle\"
           font-family=\"sans-serif\" font-size=\"15\" y=\"80\" x=\"75\"
           fill-opacity=\"null\" stroke-opacity=\"null\" stroke-width=\"0\"
           fill=\"#000000\">` +
@@ -104,7 +105,6 @@ export default {
               this.component.properties.componentType :
               this.component.properties.displayName) +
           `</text>`;
-      }
       return svgTemplate;
     },
   },

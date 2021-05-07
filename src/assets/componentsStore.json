@@ -127,8 +127,8 @@
   },
   {
     "properties": {
-      "componentType": "TEST",
-      "componentID": "preview-test",
+      "componentType": "NOT",
+      "componentID": "preview-not",
       "displayName": "",
       "x": 0,
       "y": 0,
@@ -143,18 +143,10 @@
       {
         "name": "A",
         "x": 0,
-        "y": 50,
+        "y": 75,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-test"
-      },
-      {
-        "name": "B",
-        "x": 0,
-        "y": 100,
-        "direction": "in",
-        "connectedNet": "open",
-        "componentID": "preview-test"
+        "componentID": "preview-not"
       },
       {
         "name": "O",
@@ -162,10 +154,10 @@
         "y": 75,
         "direction": "out",
         "connectedNet": "open",
-        "componentID": "preview-test"
+        "componentID": "preview-not"
       }
     ],
-    "customBodyPath": ""
+    "customBodyPath": "M 10 75 h 25 m 0 40 v -80 l 75 40 l -75 40 m 75 -40 a 1 1 0 0 0 10 0 a 1 1 0 0 0 -10 0 m 10 0 h 20 M 140 75"
   },
   {
     "properties": {
@@ -218,5 +210,55 @@
       }
     ],
     "customBodyPath": ""
+  },
+  {
+    "properties": {
+      "componentType": "FDC",
+      "componentID": "preview-fdc",
+      "displayName": "",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "rotation": 0,
+      "strokeColour": "#000",
+      "availableInputFill": "#fff",
+      "availableOutputFill": "#fff"
+    },
+    "pins": [
+      {
+        "name": "D",
+        "x": 0,
+        "y": 40,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-fdc"
+      },
+      {
+        "name": "C",
+        "x": 0,
+        "y": 100,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-fdc"
+      },
+      {
+        "name": "CLR",
+        "x": 0,
+        "y": 140,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-fdc"
+      },
+      {
+        "name": "Q",
+        "x": 150,
+        "y": 40,
+        "direction": "out",
+        "connectedNet": "open",
+        "componentID": "preview-fdc"
+      }
+    ],
+    "customBodyPath": "M 0 140 h 75 v -10 h -55 v -120 h 110 v 120 h -55 M 0 40 h 20 M 0 100 h 20 m 0 -10 l 10 10 l -10 10 M 150 40 h -20"
   }
 ]
