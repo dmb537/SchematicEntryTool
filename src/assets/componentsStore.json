@@ -1,7 +1,7 @@
 [
   {
     "properties": {
-      "componentType": "AND",
+      "componentType": "AND2",
       "componentID": "preview-and",
       "displayName": "",
       "x": 0,
@@ -15,7 +15,7 @@
     },
     "pins": [
       {
-        "name": "A",
+        "name": "I0",
         "x": 0,
         "y": 50,
         "direction": "in",
@@ -23,7 +23,7 @@
         "componentID": "preview-and"
       },
       {
-        "name": "B",
+        "name": "I1",
         "x": 0,
         "y": 100,
         "direction": "in",
@@ -43,7 +43,7 @@
   },
   {
     "properties": {
-      "componentType": "OR",
+      "componentType": "OR2",
       "componentID": "preview-or",
       "displayName": "",
       "x": 0,
@@ -57,7 +57,7 @@
     },
     "pins": [
       {
-        "name": "A",
+        "name": "I0",
         "x": 0,
         "y": 50,
         "direction": "in",
@@ -65,7 +65,7 @@
         "componentID": "preview-or"
       },
       {
-        "name": "B",
+        "name": "I1",
         "x": 0,
         "y": 100,
         "direction": "in",
@@ -85,7 +85,7 @@
   },
   {
     "properties": {
-      "componentType": "XOR",
+      "componentType": "XOR2",
       "componentID": "preview-xor",
       "displayName": "",
       "x": 0,
@@ -99,7 +99,7 @@
     },
     "pins": [
       {
-        "name": "A",
+        "name": "I0",
         "x": 0,
         "y": 50,
         "direction": "in",
@@ -107,7 +107,7 @@
         "componentID": "preview-xor"
       },
       {
-        "name": "B",
+        "name": "I1",
         "x": 0,
         "y": 100,
         "direction": "in",
@@ -127,7 +127,7 @@
   },
   {
     "properties": {
-      "componentType": "NOT",
+      "componentType": "INV",
       "componentID": "preview-not",
       "displayName": "",
       "x": 0,
@@ -141,7 +141,7 @@
     },
     "pins": [
       {
-        "name": "A",
+        "name": "I",
         "x": 0,
         "y": 75,
         "direction": "in",
@@ -201,7 +201,7 @@
     },
     "pins": [
       {
-        "name": "A",
+        "name": "I",
         "x": 0,
         "y": 75,
         "direction": "in",
@@ -213,8 +213,8 @@
   },
   {
     "properties": {
-      "componentType": "FDC",
-      "componentID": "preview-fdc",
+      "componentType": "FDCP",
+      "componentID": "preview-fdcp",
       "displayName": "",
       "x": 0,
       "y": 0,
@@ -232,7 +232,7 @@
         "y": 40,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdc"
+        "componentID": "preview-fdcp"
       },
       {
         "name": "C",
@@ -240,7 +240,7 @@
         "y": 100,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdc"
+        "componentID": "preview-fdcp"
       },
       {
         "name": "CLR",
@@ -248,7 +248,15 @@
         "y": 140,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdc"
+        "componentID": "preview-fdcp"
+      },
+      {
+        "name": "PRE",
+        "x": 0,
+        "y": 0,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-fdcp"
       },
       {
         "name": "Q",
@@ -256,9 +264,9 @@
         "y": 40,
         "direction": "out",
         "connectedNet": "open",
-        "componentID": "preview-fdc"
+        "componentID": "preview-fdcp"
       }
     ],
-    "customBodyPath": "M 0 140 h 75 v -10 h -55 v -120 h 110 v 120 h -55 M 0 40 h 20 M 0 100 h 20 m 0 -10 l 10 10 l -10 10 M 150 40 h -20"
+    "customBodyPath": "M 0 140 h 75 v -10 h -55 v -120 h 110 v 120 h -55 M 0 40 h 20 M 0 100 h 20 m 0 -10 l 10 10 l -10 10 M 150 40 h -20 M 0 0 h 75 v 10"
   }
 ]

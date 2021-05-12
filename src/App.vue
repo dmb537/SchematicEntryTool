@@ -13,6 +13,9 @@
       <button @click="triggerLoadDesign"> Load Design </button>
       <button @click="rotateSelection"> Rotate Selection </button>
       <button @click="renameSelection"> Rename Selection </button>
+      <VHDLConverter
+        :activeDesign="activeDesign"
+        :designs="designs"/>
     </div>
     <div id="content">
       <ComponentPane
@@ -151,6 +154,7 @@
 import ComponentPane from './components/ComponentPane.vue';
 import Popup from './components/Popup';
 import Schematic from './components/Schematic.vue';
+import VHDLConverter from './components/VHDLConverter.vue';
 
 import componentsStore from './assets/componentsStore';
 import {stringify, parse} from 'flatted';
@@ -162,6 +166,7 @@ export default {
     ComponentPane,
     Schematic,
     Popup,
+    VHDLConverter,
   },
   data() {
     return {
@@ -191,13 +196,15 @@ export default {
       return (this.designs.some((design) => design.name === this.newName) ||
           this.componentLibrary.some((component) =>
             component.properties.componentType === this.newName) ||
-          this.newName === 'New Schematic');
+          this.newName === 'NewSchematic');
     },
     nameIsUsedInDesign() {
       // Name is invalid for a component or net if it is already used for a
       // component or net in the current design
-      return this.activeDesign.components.some(
-          (component) => component.properties.displayName === this.newName,
+      return (this.activeDesign.components.some(
+          (component) => component.properties.displayName === this.newName) ||
+          this.activeDesign.nets.some(
+              (net) => net.netName === this.newName)
       );
     },
   },
@@ -208,7 +215,7 @@ export default {
     addNewDesign() {
       const newDesign =
           {'id': Date.now(),
-            'name': 'New Schematic',
+            'name': 'NewSchematic',
             'rerender': 0,
             'components': [],
             'nextComponentID': 0,

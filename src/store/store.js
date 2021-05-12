@@ -164,8 +164,9 @@ export default new Vuex.Store({
       }
       const newComponent = parse(stringify(component));
       const newComponentID =
-          `component-${context.state.activeDesign.nextComponentID}`;
+          `component_${context.state.activeDesign.nextComponentID}`;
       newComponent.properties.componentID = newComponentID;
+      newComponent.properties.displayName = newComponentID;
       newComponent.pins.forEach((pin) => {
         pin.componentID = newComponentID;
       });
@@ -178,8 +179,8 @@ export default new Vuex.Store({
     },
     startGhostWire(context, payload) {
       const newNet = {
-        netID: 'net-' + context.state.activeDesign.nextNetID,
-        netName: 'net-' + context.state.activeDesign.nextNetID,
+        netID: 'net_' + context.state.activeDesign.nextNetID,
+        netName: 'net_' + context.state.activeDesign.nextNetID,
         pins: [payload.pin],
         nodes: [],
         segments: [],

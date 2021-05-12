@@ -1,0 +1,17 @@
+{
+  "AND2": {
+    "vhdl": "\tcomponent AND2\n\t\tport (\n\t\t\tI0\t: in\tstd_logic;\n\t\t\tI1\t: in\tstd_logic;\n\t\t\tO\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of AND2 : component is \"BLACK_BOX\";\n\n"
+  },
+  "OR2": {
+    "vhdl": "\tcomponent OR2\n\t\tport (\n\t\t\tI0\t: in\tstd_logic;\n\t\t\tI1\t: in\tstd_logic;\n\t\t\tO\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of OR2 : component is \"BLACK_BOX\";\n\n"
+  },
+  "XOR2": {
+    "vhdl": "\tcomponent XOR2\n\t\tport (\n\t\t\tI0\t: in\tstd_logic;\n\t\t\tI1\t: in\tstd_logic;\n\t\t\tO\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of XOR2 : component is \"BLACK_BOX\";\n\n"
+  },
+  "INV": {
+    "vhdl": "\tcomponent INV\n\t\tport (\n\t\t\tI\t: in\tstd_logic;\n\t\t\tO\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of INV : component is \"BLACK_BOX\";\n\n"
+  },
+  "FDCP": {
+    "vhdl": "\tcomponent FDCP\n\t\tgeneric(INIT : bit :=  '0');\n\t\tport (\n\t\t\tC\t: in\tstd_logic;\n\t\t\tCLR\t: in\tstd_logic;\n\t\t\tD\t: in\tstd_logic;\n\t\t\tPRE\t: in\tstd_logic;\n\t\t\tQ\t: out\tstd_logic;\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of FDCP : component is \"BLACK_BOX\";\n\n"
+  }
+}
