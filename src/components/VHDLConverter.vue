@@ -7,6 +7,7 @@
 
 <script>
 import componentsVHDL from './../assets/componentsVHDL';
+import {saveAs} from 'file-saver';
 
 export default {
   name: 'VHDLConverter',
@@ -35,7 +36,9 @@ export default {
           `-- Exported on ${(new Date).toString()}\n`;
 
       this.convertDesign(this.activeDesign);
-      console.log(this.vhdl);
+      saveAs(new File([this.vhdl],
+          `${this.activeDesign.name}_${new Date().toISOString()}.vhd`,
+          {type: 'text/plain'}));
     },
     convertDesign(design) {
       this.currentDesign = design;
