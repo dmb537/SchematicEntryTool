@@ -126,13 +126,13 @@ export default {
                 this.vhdl += `\n\t\t\t${pin.name}\t: out \t std_logic;`;
               });
               this.vhdl = this.vhdl.slice(0, -1);
-              this.vhdl += `\n\t\t);\n\tend component;\n`;
+              this.vhdl += `\n\t\t);\n\tend component;\n\n`;
             }
           }
         }
       });
 
-      this.vhdl += `\nbegin\n`;
+      this.vhdl += `begin\n`;
       // Attach ports to nets
       // - Inputs
       ports.filter((port) => {
