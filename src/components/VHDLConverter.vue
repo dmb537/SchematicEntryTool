@@ -49,7 +49,7 @@ export default {
           `use ieee.std_logic_1164.ALL;\n` +
           `use ieee.numeric_std.ALL;\n` +
           `library UNISIM;\n` +
-          `use UNISIM.Vcomponents.ALL;`;
+          `use UNISIM.Vcomponents.ALL;\n\n`;
 
       // Split components into ports and components
       const ports = [];
@@ -132,7 +132,7 @@ export default {
         }
       });
 
-      this.vhdl += `begin\n`;
+      this.vhdl += `\nbegin\n`;
       // Attach ports to nets
       // - Inputs
       ports.filter((port) => {
