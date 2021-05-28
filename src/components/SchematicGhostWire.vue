@@ -1,15 +1,8 @@
 <template>
-  <line
-    :x1="startCoords.x"
-    :y1="startCoords.y"
-    :x2="mouseX"
-    :y2="mouseY"
-    stroke="grey" />
+  <g v-html="computedSVG" />
 </template>
 
-
 <script>
-
 export default {
   name: 'SchematicGhostWire',
   components: {
@@ -19,6 +12,32 @@ export default {
     ghostWire: Object,
   },
   computed: {
+    computedSVG: function() {
+      let svg = '';
+      let dx = 0;
+      let dy = 0;
+      const start = this.startCoords;
+      const end = {x: this.mouseX, y: this.mouseY};
+
+
+      dx = end.x - start.x;
+      dy = end.y - start.y;
+      // Rendering
+      svg += '<polyline fill="none" stroke="grey" points="';
+      if (Math.abs(dx) > Math.abs(dy)) {
+        svg += `${start.x},${start.y}
+            ${start.x + dx/2},${start.y}
+            ${start.x + dx/2},${end.y}
+            ${end.x},${end.y}`;
+      } else {
+        svg += `${start.x},${start.y}
+            ${start.x},${start.y + dy/2}
+            ${end.x},${start.y + dy/2}
+            ${end.x},${end.y}`;
+      }
+      svg += `" />`;
+      return svg;
+    },
     mouseX: function() {
       const x = this.ghostWire.end.x;
       return x;
