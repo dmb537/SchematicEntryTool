@@ -1,6 +1,58 @@
 [
   {
     "properties": {
+      "componentType": "VCC",
+      "componentID": "preview-vcc",
+      "displayName": "",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "rotation": 0,
+      "strokeColour": "#000",
+      "availableInputFill": "#fff",
+      "availableOutputFill": "#fff"
+    },
+    "pins": [
+      {
+        "name": "P",
+        "x": 75,
+        "y": 100,
+        "direction": "out",
+        "connectedNet": "open",
+        "componentID": "preview-vcc"
+      }
+    ],
+    "customBodyPath": "M 55 50 h 40 m -20 0 v 50"
+  },
+  {
+    "properties": {
+      "componentType": "GND",
+      "componentID": "preview-gnd",
+      "displayName": "",
+      "x": 0,
+      "y": 0,
+      "dragX": 0,
+      "dragY": 0,
+      "rotation": 0,
+      "strokeColour": "#000",
+      "availableInputFill": "#fff",
+      "availableOutputFill": "#fff"
+    },
+    "pins": [
+      {
+        "name": "G",
+        "x": 75,
+        "y": 50,
+        "direction": "out",
+        "connectedNet": "open",
+        "componentID": "preview-gnd"
+      }
+    ],
+    "customBodyPath": "M 75 50 v 50 m -20 0 h 40 m -32 5 h 24 m -16 5 h 8 "
+  },
+  {
+    "properties": {
       "componentType": "AND2",
       "componentID": "preview-and",
       "displayName": "",
@@ -213,8 +265,8 @@
   },
   {
     "properties": {
-      "componentType": "FDCP",
-      "componentID": "preview-fdcp",
+      "componentType": "FDCE",
+      "componentID": "preview-fdce",
       "displayName": "",
       "x": 0,
       "y": 0,
@@ -232,7 +284,15 @@
         "y": 40,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdcp"
+        "componentID": "preview-fdce"
+      },
+      {
+        "name": "CE",
+        "x": 0,
+        "y": 70,
+        "direction": "in",
+        "connectedNet": "open",
+        "componentID": "preview-fdce"
       },
       {
         "name": "C",
@@ -240,7 +300,7 @@
         "y": 100,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdcp"
+        "componentID": "preview-fdce"
       },
       {
         "name": "CLR",
@@ -248,15 +308,7 @@
         "y": 140,
         "direction": "in",
         "connectedNet": "open",
-        "componentID": "preview-fdcp"
-      },
-      {
-        "name": "PRE",
-        "x": 0,
-        "y": 0,
-        "direction": "in",
-        "connectedNet": "open",
-        "componentID": "preview-fdcp"
+        "componentID": "preview-fdce"
       },
       {
         "name": "Q",
@@ -267,6 +319,6 @@
         "componentID": "preview-fdcp"
       }
     ],
-    "customBodyPath": "M 0 140 h 75 v -10 h -55 v -120 h 110 v 120 h -55 M 0 40 h 20 M 0 100 h 20 m 0 -10 l 10 10 l -10 10 M 150 40 h -20 M 0 0 h 75 v 10"
+    "customBodyPath": "M 0 140 h 75 v -10 h -55 v -120 h 110 v 120 h -55 M 0 40 h 20 M 0 70 h 20 M 0 100 h 20 m 0 -10 l 10 10 l -10 10 M 150 40 h -20"
   }
 ]

@@ -11,7 +11,13 @@
   "INV": {
     "vhdl": "\tcomponent INV\n\t\tport (\n\t\t\tI\t: in\tstd_logic;\n\t\t\tO\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of INV : component is \"BLACK_BOX\";\n\n"
   },
-  "FDCP": {
-    "vhdl": "\tcomponent FDCP\n\t\tgeneric(INIT : bit :=  '0');\n\t\tport (\n\t\t\tC\t: in\tstd_logic;\n\t\t\tCLR\t: in\tstd_logic;\n\t\t\tD\t: in\tstd_logic;\n\t\t\tPRE\t: in\tstd_logic;\n\t\t\tQ\t: out\tstd_logic;\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of FDCP : component is \"BLACK_BOX\";\n\n"
+  "FDCE": {
+    "vhdl": "\tcomponent FDCE\n\t\tgeneric(INIT : bit :=  '0');\n\t\tport (\n\t\t\tC\t: in\tstd_logic;\n\t\t\tCE\t: in\tstd_logic;\n\t\t\tCLR\t: in\tstd_logic;\n\t\t\tD\t: in\tstd_logic;\n\t\t\tQ\t: out\tstd_logic\n\t\t);\n\tend component;\n\tattribute BOX_TYPE of FDCE : component is \"BLACK_BOX\";\n\n"
+  },
+  "VCC": {
+    "vhdl": "\tcomponent VCC\n\t\tport (\tP\t: out\tstd_logic);\n\tend component;\n\tattribute BOX_TYPE of VCC : component is \"BLACK_BOX\";\n\n"
+  },
+  "GND": {
+    "vhdl": "\tcomponent GND\n\t\tport (\tG\t: out\tstd_logic);\n\tend component;\n\tattribute BOX_TYPE of GND : component is \"BLACK_BOX\";\n\n"
   }
 }

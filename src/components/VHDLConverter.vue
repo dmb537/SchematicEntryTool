@@ -138,15 +138,19 @@ export default {
       ports.filter((port) => {
         return (port.properties.componentType == 'INPUT');
       }).forEach((port) => {
-        this.vhdl += `\t${port.pins[0].connectedNet.netName} <= ` +
+        if (port.pins[0].connectedNet != 'open') {
+          this.vhdl += `\t${port.pins[0].connectedNet.netName} <= ` +
             `${port.properties.displayName};\n`;
+        }
       });
       // - Outputs
       ports.filter((port) => {
         return (port.properties.componentType == 'OUTPUT');
       }).forEach((port) => {
-        this.vhdl += `\t${port.properties.displayName} <= ` +
+        if (port.pins[0].connectedNet != 'open') {
+          this.vhdl += `\t${port.properties.displayName} <= ` +
             `${port.pins[0].connectedNet.netName};\n`;
+        }
       });
 
       // Create components
@@ -156,7 +160,11 @@ export default {
           `${component.properties.componentType}\n` +
           `\t\tport map (`;
         component.pins.forEach((pin) => {
-          this.vhdl += `\n\t\t\t${pin.name}\t=> ${pin.connectedNet.netName},`;
+          if (pin.connectedNet != 'open') {
+            this.vhdl += `\n\t\t\t${pin.name}\t=> ${pin.connectedNet.netName},`;
+          } else {
+            this.vhdl += `\n\t\t\t${pin.name}\t=> open,`;
+          }
         });
         this.vhdl = this.vhdl.slice(0, -1);
         this.vhdl += `\n\t\t);\n\n`;

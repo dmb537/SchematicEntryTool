@@ -93,9 +93,20 @@ export default {
           `<path d=\"${this.component.customBodyPath}\"
           fill=\"${this.fillAndError.fill}\"/>`;
       } else {
-        svgTemplate +=
+        const numInputs = this.component.pins.filter((pin) =>
+          pin.direction === 'in').length;
+        const numOutputs = this.component.pins.filter((pin) =>
+          pin.direction === 'out').length;
+        const mostPins = Math.max(numInputs, numOutputs);
+        if (mostPins > 5) {
+          svgTemplate +=
+          `<rect height=\"${(mostPins*30)}\" width=\"150\" x=\"0\" y=\"0\"
+          fill=\"${this.fillAndError.fill}\"/>`;
+        } else {
+          svgTemplate +=
           `<rect height=\"150\" width=\"150\" x=\"0\" y=\"0\"
           fill=\"${this.fillAndError.fill}\"/>`;
+        }
       }
       svgTemplate += `<text xml:space=\"preserve\" text-anchor=\"middle\"
           font-family=\"sans-serif\" font-size=\"15\" y=\"80\" x=\"75\"
